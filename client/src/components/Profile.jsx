@@ -5,6 +5,7 @@ import { getBlogs, deleteBlog } from "../redux/actions/blog";
 import { getTime } from "../utilty/getTime";
 
 import Share from "./AllBolgs/Share";
+import { toast } from "react-toastify";
 const Profile = () => {
   const [userData, setUserData] = useState();
   const navigate = useNavigate();
@@ -32,7 +33,10 @@ const Profile = () => {
   };
   const handleDelete = (id) => {
     dispatch(deleteBlog(id));
-    window.location.reload();
+    toast.success("Blog Deleted Sucessfully 😊");
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
   };
   const baseUrl = window.location.href.split("allBlogs")[0];
   return (
@@ -64,44 +68,16 @@ const Profile = () => {
                     <>
                       {isSameUser(item?.author?._id) ? (
                         <>
-                          <div>
-                            {open && (
-                              <div className="fixed inset-0 flex items-center justify-center z-50">
-                                <div className="absolute z-auto inset-0 bg-black opacity-70 blur-sm w-full h-full"></div>
-                                <div className="bg-white rounded-lg shadow-lg max-w-lg w-full z-10">
-                                  <div className="px-4 py-4 text-xl">
-                                    ⚠️Warning⚠️
-                                  </div>
-                                  <div className="text-black text-md p-5 text-center">
-                                    Do You Really Want to Delete the Blog !
-                                  </div>
-                                  <div className="px-4 py-2 border-t flex justify-end">
-                                    <button
-                                      onClick={handleOpen}
-                                      className="text-white p-4 mr-2 bg-gray-400 rounded-lg"
-                                    >
-                                      Cancel
-                                    </button>
-                                    <button
-                                      onClick={() => handleDelete(item._id)}
-                                      style={{ width: "20%" }}
-                                      className="bg-red-600 text-white rounded"
-                                    >
-                                      Delete
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
                           <div className="max-w-[24rem] m-8 overflow-hidden mt-12 bg-white shadow-lg rounded-lg">
-                            <div className="m-0 rounded-none">
-                              <img
-                                src={item.image}
-                                alt="ui/ux review check"
-                                className="w-full"
-                              />
-                            </div>
+                            <NavLink to={`/singlePost/${item._id}`}>
+                              <div className="m-0 rounded-none">
+                                <img
+                                  src={item.image}
+                                  alt="ui/ux review check"
+                                  className="w-full"
+                                />
+                              </div>
+                            </NavLink>
                             <div className="p-4">
                               <h1 className="line-clamp-1 text-blue-gray-900 font-black text-base">
                                 {item.title}
@@ -134,7 +110,7 @@ const Profile = () => {
                                   aria-label="delete the post"
                                   type="button"
                                   className="p-2"
-                                  onClick={handleOpen}
+                                  onClick={() => handleDelete(item._id)}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"

@@ -42,15 +42,16 @@ const Auth = () => {
         email,
         password,
       };
-
       await dispatch(signin(user));
     } catch (error) {
       console.log(error);
-      navigate("/");
     }
     window.location.reload();
   };
   if (!cat) {
+    return <>Loading....</>;
+  }
+  if (!signin) {
     return <>Loading....</>;
   }
   return (
