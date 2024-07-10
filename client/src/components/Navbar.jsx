@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import {
@@ -12,21 +12,31 @@ import {
   Transition,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-
-const navigation = [{ name: "Blogs", href: "/allBlogs", current: false }];
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { toast } from "react-toastify";
+import { getBlogs } from "../redux/actions/blog";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Navbar() {
+  const navigation = [{ name: "Blogs", href: "/allBlogs", current: false }];
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(" ");
+  }
+  const data = useSelector((state) => state?.blog?.blog);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getBlogs());
+  }, []);
+  // console.log(data.length);
   const profile = JSON.parse(localStorage.getItem("profile"));
-  // console.log(profile);
 
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.clear();
+    toast.success("Logout Sucessfully");
     navigate("/");
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
   };
   const handleSignIn = () => {
     navigate("/auth");
@@ -87,8 +97,10 @@ export default function Navbar() {
                   className="flex item-center justify-center relative rounded-full bg-white p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white"
                 >
                   <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View Bookmarks</span>
-                  <i style={{ fontSize: "20px" }} class="bx bx-bookmark"></i>
+                  <span className="text-black-200">
+                    Total Blogs : {data?.length}
+                  </span>
+                  {/* <i style={{ fontSize: "20px" }} class="bx bx-bookmark"></i> */}
                 </button>
 
                 {/* Profile dropdown */}
