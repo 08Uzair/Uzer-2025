@@ -1,0 +1,18 @@
+
+* {
+  scroll-behavior: smooth;
+}
+
+.gridBox {
+  display: grid;
+  grid-template-columns: 1fr 10fr 1fr;
+}
+
+.shadow {
+  background: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+
+}
