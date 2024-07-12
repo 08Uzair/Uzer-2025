@@ -1,15 +1,16 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Your server application",
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "preinstall": "npm cache clean --force"
   },
   "keywords": [],
-  "author": "",
+  "author": "Your Name",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.2",
@@ -21,8 +22,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.1"
   },
-
-   "engines": {
+  "engines": {
     "node": "18.16.0"
   }
 }
