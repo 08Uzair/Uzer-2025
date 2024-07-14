@@ -207,10 +207,20 @@ export default function Navbar() {
                             <button
                               className={classNames(
                                 focus ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700 w-full"
+                                "flex item-start block px-4 py-2 text-sm text-gray-700 w-full"
                               )}
                               onClick={handleSignIn}
                             >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                className="text-gray rounded mr-2"
+                              >
+                                <path d="m13 16 5-4-5-4v3H4v2h9z"></path>
+                                <path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path>
+                              </svg>
                               Sign In
                             </button>
                           )}
