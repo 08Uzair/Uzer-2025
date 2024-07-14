@@ -5,14 +5,14 @@ import { getUsers } from "../redux/actions/auth.js";
 import { NavLink } from "react-router-dom";
 const UserCards = () => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.auth?.user?.slice(0, 3));
+  const data = useSelector((state) => state.auth?.user?.slice(0, 4));
   useEffect(() => {
     dispatch(getUsers());
   }, []);
   // console.log(data);
   return (
     <>
-      <h1 className="text-center p-5 text-3xl font-bold">Our Users</h1>
+      <h1 className="text-center p-5 text-3xl font-bold mb-4">Our Community</h1>
       <div className="flex item-center justify-center mb-6">
         {data?.map((item, index) => {
           return (

@@ -6,6 +6,7 @@ import { getTime } from "../utilty/getTime";
 
 import Share from "./AllBolgs/Share";
 import { toast } from "react-toastify";
+import Loader from "../utilty/Loader";
 const Profile = () => {
   const [userData, setUserData] = useState();
   const navigate = useNavigate();
@@ -39,6 +40,9 @@ const Profile = () => {
     }, 2000);
   };
   const baseUrl = window.location.href.split("allBlogs")[0];
+  if(!blogs || !userData){
+    return <Loader/>
+  }
   return (
     <>
       <div className="p-16">
@@ -49,8 +53,8 @@ const Profile = () => {
                 <div>
                   <img
                     src={userData?.image}
-                    alt="User Icon"
-                    className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500"
+                    alt="User Icon" 
+                    className="object-cover w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500"
                   />
                 </div>
               </div>
@@ -100,7 +104,7 @@ const Profile = () => {
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
-                                  className="w-5 h-5 fill-current dark:text-violet-600"
+                                  className="w-5 h-5 fill-current dark:text-violet-600 hover:text-red-600"
                                 >
                                   <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553-6-3.428-6 3.428V4h12v14.553z"></path>
                                 </svg>
@@ -115,7 +119,7 @@ const Profile = () => {
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
-                                    className="w-5 h-5 fill-current dark:text-violet-600"
+                                    className="w-5 h-5 fill-current dark:text-violet-600 hover:text-green-600"
                                   >
                                     <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
                                     <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
@@ -172,7 +176,15 @@ const Profile = () => {
                             </div>
                             <span
                               className="text-xs dark:text-gray-600 relative"
-                              style={{ left: "8rem", top: "-5rem" }}
+                              style={{
+                                left: "-7rem",
+                                top: "-23rem",
+                                background: "black",
+                                border: "1px solid",
+                                color: "#fff",
+                                padding: "4px",
+                                "border-radius": "6px",
+                              }}
                             >
                               {getTime(item.createdAt)}
                             </span>

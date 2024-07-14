@@ -28,7 +28,7 @@ const SinglePost = () => {
             <span className="text-gray-600">{getTime(data?.createdAt)}</span>
           </div>
         </div>
-        <div className="prose prose-lg text-gray-700">
+        <div className="bg-white rounded-xl p-4 prose prose-lg text-gray-700">
           {data?.content}
           <div />
         </div>

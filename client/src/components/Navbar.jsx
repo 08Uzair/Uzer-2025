@@ -32,7 +32,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.clear();
-    toast.success("Logout Sucessfully");
+    toast.success("Logged out Successfully 😊");
     navigate("/");
     setTimeout(() => {
       window.location.reload();
@@ -96,8 +96,8 @@ export default function Navbar() {
                   type="button"
                   className="flex item-center justify-center relative rounded-full bg-white p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white"
                 >
-                  <span className="absolute -inset-1.5" />
-                  <span className="text-black-200">
+                  <span className="absolute -inset-1.5 " />
+                  <span className="text-black-200 bg-slate-200  rounded-full p-2 ">
                     Total Blogs : {data?.length}
                   </span>
                   {/* <i style={{ fontSize: "20px" }} class="bx bx-bookmark"></i> */}
@@ -110,7 +110,7 @@ export default function Navbar() {
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
                       <img
-                        className="h-8 w-8 rounded-full"
+                        className="object-cover h-8 w-8 rounded-full"
                         src={
                           profile?.result?.image ||
                           "https://tse3.mm.bing.net/th?id=OIP.2hAVCZRMcBjsE8AGQfWCVQHaHa&pid=Api&P=0&h=220"
@@ -127,16 +127,25 @@ export default function Navbar() {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <MenuItems className="text-center absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItems className="flex flex-col item-start absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <NavLink to="/profile">
                         <MenuItem>
                           {({ focus }) => (
                             <a
                               className={classNames(
                                 focus ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700 w-full"
+                                "flex item-start block px-4 py-2 text-sm text-gray-700 w-full"
                               )}
                             >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                className="text-gray rounded mr-2"
+                              >
+                                <path d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2 7.5 4.019 7.5 6.5zM20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h17z"></path>
+                              </svg>
                               Your Profile
                             </a>
                           )}
@@ -149,9 +158,19 @@ export default function Navbar() {
                             <a
                               className={classNames(
                                 focus ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700 w-full"
+                                "flex item-start block px-4 py-2 text-sm text-gray-700 w-full"
                               )}
                             >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                className="text-gray rounded mr-2"
+                              >
+                                <path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V5h7v14H4zm9 0V5h7l.001 14H13z"></path>
+                                <path d="M15 7h3v2h-3zm0 4h3v2h-3z"></path>
+                              </svg>
                               All Blogs
                             </a>
                           )}
@@ -164,10 +183,20 @@ export default function Navbar() {
                             <button
                               className={classNames(
                                 focus ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700 w-full"
+                                " flex item-start block px-4 py-2 text-sm text-gray-700 w-full"
                               )}
                               onClick={handleLogout}
                             >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                className="text-gray rounded mr-2"
+                              >
+                                <path d="M16 13v-2H7V8l-5 4 5 4v-3z"></path>
+                                <path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path>
+                              </svg>
                               Sign out
                             </button>
                           )}

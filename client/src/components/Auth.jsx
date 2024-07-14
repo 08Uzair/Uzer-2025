@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getCategory } from "../redux/actions/category";
 import { signUp, signin } from "../redux/actions/auth";
+import { toast } from "react-toastify";
 
 const Auth = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -12,6 +13,7 @@ const Auth = () => {
   const [image, setImage] = useState("");
   const [bio, setBio] = useState("");
   const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cat = useSelector((state) => state?.category);
@@ -19,6 +21,7 @@ const Auth = () => {
     dispatch(getCategory());
   }, [dispatch]);
   const handleSignUp = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const newUser = {
@@ -30,12 +33,18 @@ const Auth = () => {
         category,
       };
       await dispatch(signUp(newUser));
+      toast.success("Register Sucessfully")
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
+    } finally {
+      setLoading(false);
     }
     window.location.reload();
   };
   const handleSignIn = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const user = {
@@ -43,8 +52,12 @@ const Auth = () => {
         password,
       };
       await dispatch(signin(user));
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
+    } finally {
+      setLoading(false);
     }
     window.location.reload();
   };
@@ -80,6 +93,7 @@ const Auth = () => {
             handleSignIn={handleSignIn}
             setEmail={setEmail}
             setPassword={setPassword}
+            loading={loading}
           />
         ) : (
           <SignUpForm
@@ -91,6 +105,7 @@ const Auth = () => {
             setBio={setBio}
             setCategory={setCategory}
             cat={cat}
+            loading={loading}
           />
         )}
       </div>
@@ -98,7 +113,7 @@ const Auth = () => {
   );
 };
 
-const SignInForm = ({ handleSignIn, setEmail, setPassword }) => (
+const SignInForm = ({ handleSignIn, setEmail, setPassword, loading }) => (
   <form onSubmit={handleSignIn}>
     <div className="mb-4">
       <label
@@ -135,8 +150,9 @@ const SignInForm = ({ handleSignIn, setEmail, setPassword }) => (
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   focus:outline-none focus:shadow-outline"
         type="button"
         onClick={handleSignIn}
+        disabled={loading}
       >
-        Sign In
+        {loading ? "Signing in..." : "Signin"}
       </button>
       <a
         className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
@@ -150,6 +166,7 @@ const SignInForm = ({ handleSignIn, setEmail, setPassword }) => (
 
 const SignUpForm = ({
   handleSignUp,
+  loading,
   setName,
   setEmail,
   setPassword,
@@ -234,8 +251,9 @@ const SignUpForm = ({
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   focus:outline-none focus:shadow-outline"
         type="submit"
+        disabled={loading}
       >
-        Sign Up
+        {loading ? "Signing up..." : "Signup"}
       </button>
     </div>
   </form>

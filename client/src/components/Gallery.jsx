@@ -10,7 +10,7 @@ const Gallery = () => {
       {
         src: plus,
         path: "/createBlog",
-        label: "Create Blog",
+        // label: "Create Blog",
       },
       {
         src: "https://images.unsplash.com/photo-1629367494173-c78a56567877?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=927&amp;q=80",
@@ -72,7 +72,6 @@ const Gallery = () => {
   ];
 
   const handleClick = (path) => {
-   
     navigate(path);
   };
 
@@ -82,6 +81,11 @@ const Gallery = () => {
         <div className="grid gap-4" key={columnIndex}>
           {column.map((image, index) => (
             <div
+              style={
+                index === 0 && columnIndex === 0
+                  ? { border: "4px dotted black ", borderRadius: "10px" }
+                  : {}
+              }
               className="relative cursor-pointer"
               key={index}
               onClick={() => handleClick(image.path)}
