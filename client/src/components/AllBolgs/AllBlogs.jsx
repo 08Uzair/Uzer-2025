@@ -101,7 +101,7 @@ const AllBlogs = () => {
         </div>
         {/* FILTER */}
         <div>
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 w-full overflow-x-auto ">
             <button
               onClick={() => handelAll()}
               className={`px-4 py-2 rounded-lg focus:outline-none ${
@@ -142,18 +142,24 @@ const AllBlogs = () => {
                       alt={item?.author?.name}
                     />
                   </NavLink>
-
-                  <div className="flex flex-col space-y-1">
-                    <a
-                      rel="noopener noreferrer"
-                      href="#"
-                      className="text-sm font-semibold"
-                    >
-                      {item?.author?.name}
-                    </a>
-                    <span className="text-xs dark:text-gray-600 relative">
-                      {getTime(item.createdAt)}
-                    </span>
+                  <div className="flex item-center justify ">
+                    <div className="flex flex-col space-y-1 mr-36">
+                      <a
+                        rel="noopener noreferrer"
+                        href="#"
+                        className="text-sm font-semibold"
+                      >
+                        {item?.author?.name}
+                      </a>
+                      <span className="text-xs dark:text-gray-600 relative">
+                        {getTime(item.createdAt)}
+                      </span>
+                    </div>
+                    <Share
+                      title={item.title}
+                      content={item.content}
+                      url={`${baseUrl}singlePost/${item._id}`}
+                    />
                   </div>
                 </div>
                 <NavLink to={`/singlePost/${item?._id}`}>
@@ -232,20 +238,9 @@ const AllBlogs = () => {
                             </svg>
                           </button>
                         </NavLink>
-                        <Share
-                          title={item.title}
-                          content={item.content}
-                          url={`${baseUrl}singlePost/${item._id}`}
-                        />
                       </>
                     ) : (
-                      <>
-                        <Share
-                          title={item.title}
-                          content={item.content}
-                          url={`${baseUrl}singlePost/${item._id}`}
-                        />
-                      </>
+                      <></>
                     )}
                   </div>
                 </div>

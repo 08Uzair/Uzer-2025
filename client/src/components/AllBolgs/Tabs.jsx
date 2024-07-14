@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const filters = [
   "Business",
   "Entertainment",
-  "Food&Cooking",
+  "Food & Cooking",
   "Travel",
   "Health",
   "Science",
@@ -11,15 +11,17 @@ const filters = [
   "Technology",
   "Bitcoin",
 ];
+
 const Tabs = () => {
-const [activeFilter, setActiveFilter] = useState("");
+  const [activeFilter, setActiveFilter] = useState("");
 
   const handleFilterClick = (filter) => {
     setActiveFilter(filter);
   };
+
   return (
-    <div>
-      <div className="flex space-x-2">
+    <div >
+      <div className="inline-flex space-x-2">
         {filters.map((filter) => (
           <button
             key={filter}
