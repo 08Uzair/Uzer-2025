@@ -12,7 +12,8 @@ import CreateBlog from "./components/CreateBlog";
 import SinglePost from "./components/SinglePost";
 import UserProfile from "./components/UserProfile";
 import UpdateBlog from "./components/UpdateBlog";
-import  { Bookmark } from "./components/Bookmarks";
+import { Bookmark } from "./components/Bookmarks";
+import Footer from "./components/Footer";
 function App() {
   const profile = JSON.parse(localStorage.getItem("profile"));
   let isAuthenticated;
@@ -50,6 +51,7 @@ function App() {
           <Route path="/userProfile/:id" element={<UserProfile />} />
           <Route path="/updatePost/:id" element={<UpdateBlog />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </>
   );

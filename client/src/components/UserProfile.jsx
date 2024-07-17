@@ -10,7 +10,7 @@ import Share from "./AllBolgs/Share";
 import Loader from "../utilty/Loader";
 const UserProfile = () => {
   const [open, setOpen] = React.useState(false);
-  const blogs = useSelector((state) => state?.blog?.blog);
+  const blogs = useSelector((state) => state?.blog?.blog.blog);
   const dispatch = useDispatch();
   useEffect(() => {
     window.scroll(0, 0);

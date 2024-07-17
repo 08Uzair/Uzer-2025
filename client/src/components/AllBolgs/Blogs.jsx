@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTime } from "../../utilty/getTime.js";
 import { deleteBlog, getBlogs } from "../../redux/actions/blog.js";
 import Share from "./Share.jsx";
-import { NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 const Blogs = () => {
   const dispatch = useDispatch();
@@ -15,17 +15,17 @@ const Blogs = () => {
   }, []);
 
   useEffect(() => {
+    window.scroll(0, 0);
     dispatch(getBlogs());
   }, []);
   console.log(data);
 
   const handleDelete = (id) => {
     dispatch(deleteBlog(id));
-    toast.success("Blog Deleted Sucessfully 😊")
-    setTimeout(()=>{
+    toast.success("Blog Deleted Sucessfully 😊");
+    setTimeout(() => {
       window.location.reload();
-    },2000)
-  
+    }, 2000);
   };
   const isSameUser = (authorId) => {
     const storedId = userData?._id;

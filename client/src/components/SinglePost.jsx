@@ -3,15 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getBlogByID } from "../redux/actions/blog";
 import { getTime } from "../utilty/getTime";
+import Loader from "../utilty/Loader";
 const SinglePost = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.blog[0]);
+  const data = useSelector((state) => state?.blog?.singleBlog);
+  // console.log(data);
   useEffect(() => {
+    window.scroll(0, 0);
     dispatch(getBlogByID(id));
-  }, [dispatch, id]);
-  console.log(data);
-
+  }, [id]);
+  console.log({ data });
+  if (data == "") {
+    return <Loader />;
+  }
   return (
     <>
       <div className="max-w-4xl mx-auto p-6">

@@ -6,7 +6,8 @@ import { NavLink } from "react-router-dom";
 // import { NavLink } from "react-router-dom";
 const CardPanel = () => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state?.blog?.blog?.slice(0, 3));
+  const data = useSelector((state) => state?.blog?.blog?.blog?.slice(0, 3));
+
   useEffect(() => {
     dispatch(getBlogs());
   }, []);

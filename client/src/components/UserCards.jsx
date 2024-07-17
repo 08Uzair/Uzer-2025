@@ -5,7 +5,7 @@ import { getUsers } from "../redux/actions/auth.js";
 import { NavLink } from "react-router-dom";
 const UserCards = () => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.auth?.user?.slice(0, 4));
+  const data = useSelector((state) => state.auth?.user?.slice(7, 11));
   useEffect(() => {
     dispatch(getUsers());
   }, []);

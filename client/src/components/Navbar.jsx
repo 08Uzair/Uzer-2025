@@ -21,7 +21,7 @@ export default function Navbar() {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
-  const data = useSelector((state) => state?.blog?.blog);
+  const data = useSelector((state) => state?.blog?.blog?.blog);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getBlogs());
