@@ -4,10 +4,13 @@
 This blog application is a modern, full-stack web application built using the MERN stack (MongoDB, Express.js, React, and Node.js) and styled with Tailwind CSS. It offers a seamless user experience with smooth animations and a responsive design. Users can create 📝, read 📖, update ✏️, and delete ❌ blog posts. The application features user authentication 🔐, allowing users to sign up 📝, log in 🔓, and manage their profiles 🧑‍💻. The use of Tailwind CSS ensures a clean and consistent UI 🎨 with utility-first styling.
 
 
-## LIVE DEMO 📽️
-Check our Youtube Video Link To understand more easily : DEMO LINK
+## VIDEO DEMO 📽️
+Check our Youtube Video Link To understand more easily : VIDEO LINK
 
-## GITHUB REPOSITORY 🤖
+## LIVE DEMO 🎥
+Check our live demo link to explore our web : [LIVE LINK](https://uzerqureshi-blog.netlify.app )
+
+## [GITHUB REPOSITORY](https://github.com/08Uzair/Uzer-2024-Blog) 🤖
 Explore the code and contribute on our GitHub Repository: MERN BLOG GITHUB
 
 ### Short Description with Emojis
