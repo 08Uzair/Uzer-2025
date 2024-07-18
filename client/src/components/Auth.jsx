@@ -68,7 +68,7 @@ const Auth = () => {
     return <>Loading....</>;
   }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center ">
       <div className="bg-white p-8 shadow-md w-full max-w-md">
         <div className="flex justify-center mb-8">
           <button
