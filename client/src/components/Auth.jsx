@@ -33,7 +33,6 @@ const Auth = () => {
         category,
       };
       await dispatch(signUp(newUser));
-      toast.success("Register Sucessfully")
       setLoading(false);
     } catch (error) {
       setLoading(false);

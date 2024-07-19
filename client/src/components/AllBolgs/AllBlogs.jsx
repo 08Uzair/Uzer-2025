@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTime } from "../../utilty/getTime.js";
-import {  getBlogs } from "../../redux/actions/blog.js";
+import { getBlogs } from "../../redux/actions/blog.js";
 import Share from "./Share.jsx";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { getCategory } from "../../redux/actions/category.js";
@@ -37,10 +37,9 @@ const AllBlogs = () => {
     dispatch(getBlogs());
   }, [dispatch]);
 
-
   function handelAll() {
     setActiveFilter("");
-    window.location.reload();
+    setQuery("a");
   }
   const isSameUser = (authorId) => {
     const storedId = userData?._id;
@@ -124,7 +123,7 @@ const AllBlogs = () => {
         </div>
         <div>
           <div className="flex flex-wrap item-center justify-center mt-24 mb-24">
-            {data?.map((item, index) => (
+            {filteredBlogs?.map((item, index) => (
               <div
                 key={index}
                 className="cursor-pointer flex flex-wrap flex-col max-w-sm p-6 space-y-6 overflow-hidden rounded-lg shadow-md dark:bg-gray-50 dark:text-gray-800 mb-10 mr-2 ml-6"
