@@ -50,17 +50,17 @@ Explore the code and contribute on our GitHub Repository: MERN BLOG GITHUB
 🌐 BASE_URL = https://uzerqureshi-blog.netlify.app/
 
 ## Users
-➡️ GET : /allBlogs
+➡️ GET : `/allBlogs`
 
-➡️ GET : /singlePost/:id
+➡️ GET : `/singlePost/:id`
 
-🚮 DELETE : /:id
+🚮 DELETE : `/:id`
 
-⬆️ POST : /createBlog
+⬆️ POST : `/createBlog`
 
-⬆️ POST : /auth/signIn
+⬆️ POST : `/auth/signIn`
 
-⬆️ POST : /auth/signUp
+⬆️ POST : `/auth/signUp`
 
 
 
