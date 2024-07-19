@@ -45,7 +45,22 @@ Explore the code and contribute on our GitHub Repository: MERN BLOG GITHUB
 ![2](https://github.com/user-attachments/assets/4a0de8f9-860f-4250-96c6-24867f71d054)
 
 
+### REST API's ENDOINTS
 
+🌐 BASE_URL = https://uzerqureshi-blog.netlify.app/
+
+## Users
+➡️ GET : /allBlogs
+
+➡️ GET : /singlePost/:id
+
+🚮 DELETE : /:id
+
+⬆️ POST : /createBlog
+
+⬆️ POST : /auth/signIn
+
+⬆️ POST : /auth/signUp
 
 
 
