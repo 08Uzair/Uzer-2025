@@ -32,18 +32,35 @@ Explore the code and contribute on our GitHub Repository: MERN BLOG GITHUB
 
 ### SOME DEMO PAGES 🌌
 
-## 1. AUTHENTICATION PAGE :
-
-![3](https://github.com/user-attachments/assets/956636ef-c2ec-47ef-9fb1-9271c13664b3)
-
-## 2. HOME PAGE :
+## 1. HOME PAGE :
 
 ![1](https://github.com/user-attachments/assets/4f1fa66f-56b0-43d9-b242-474774ff3bd5)
 
+## 2. AUTHENTICATION PAGE :
+
+![3](https://github.com/user-attachments/assets/956636ef-c2ec-47ef-9fb1-9271c13664b3)
+
 ## 3. ALL BLOGS PAGE : 
 
-![2](https://github.com/user-attachments/assets/4f0ded5b-4595-4320-a13f-efc20501cc3e)
+![2](https://github.com/user-attachments/assets/4a0de8f9-860f-4250-96c6-24867f71d054)
 
+
+### REST API's ENDOINTS
+
+🌐 BASE_URL = https://uzerqureshi-blog.netlify.app/
+
+## Users
+➡️ GET : `/allBlogs`
+
+➡️ GET : `/singlePost/:id`
+
+🚮 DELETE : `/:id`
+
+⬆️ POST : `/createBlog`
+
+⬆️ POST : `/auth/signIn`
+
+⬆️ POST : `/auth/signUp`
 
 
 
