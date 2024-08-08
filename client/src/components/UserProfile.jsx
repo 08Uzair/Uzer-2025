@@ -68,6 +68,7 @@ const UserProfile = () => {
             <div>
               <div className="flex justify-center item-center flex-wrap">
                 {blogs?.map((item, index) => {
+                  console.log(item?.author?._id);
                   return (
                     <>
                       {isSameUser(item?.author?._id) ? (
@@ -136,13 +137,13 @@ const UserProfile = () => {
                                           <div className="fixed inset-0 flex items-center justify-center z-50">
                                             <div className="absolute inset-0 bg-black opacity-50"></div>
                                             <div className="bg-white rounded-lg shadow-lg max-w-lg w-full z-10">
-                                              <div className=" text-xl font-black p-5 text-center">
-                                                Do You Want to Delete the Blog !
+                                              <div className="text-xl font-black p-5 text-center">
+                                                Do You Want to Delete the Blog?
                                               </div>
                                               <div className="px-4 py-2 border-t flex justify-end">
                                                 <button
                                                   onClick={handleOpen}
-                                                  className="text-grey-500 p-4 mr-2"
+                                                  className="text-gray-500 p-4 mr-2"
                                                 >
                                                   Cancel
                                                 </button>
@@ -150,8 +151,7 @@ const UserProfile = () => {
                                                   onClick={() =>
                                                     handleDelete(item._id)
                                                   }
-                                                  style={{ width: "20%" }}
-                                                  className="bg-red-700 text-white rounded"
+                                                  className="bg-red-700 text-white rounded w-1/5"
                                                 >
                                                   Delete
                                                 </button>
@@ -163,7 +163,7 @@ const UserProfile = () => {
                                       <button
                                         aria-label="delete the post"
                                         type="button"
-                                        className="p-2 "
+                                        className="p-2"
                                         onClick={handleOpen}
                                       >
                                         <svg

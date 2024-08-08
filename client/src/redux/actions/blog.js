@@ -31,7 +31,7 @@ export const createBlog = (blog) => async (dispatch) => {
 export const getBlogByID = (id) => async (dispatch) => {
   try {
     const { data } = await api.fetchBlogByID(id);
-    console.log(data);
+    // console.log(data);
     dispatch({ type: FETCH_BLOG_ID, payload: data });
   } catch (error) {
     console.log(error);
@@ -51,7 +51,7 @@ export const updateBlog = (id, updatedblog) => async (dispatch) => {
 export const deleteBlog = (id) => async (dispatch) => {
   try {
     await api.deleteBlogById(id);
-    console.log(id);
+    // console.log(id);
     dispatch({ type: DELETE_BLOG, payload: id });
     // toast.success("Blog Deleted Sucessfully");
   } catch (error) {

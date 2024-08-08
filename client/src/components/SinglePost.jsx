@@ -8,12 +8,12 @@ const SinglePost = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const data = useSelector((state) => state?.blog?.singleBlog);
-  // console.log(data);
+  console.log(data);
   useEffect(() => {
     window.scroll(0, 0);
     dispatch(getBlogByID(id));
   }, [id]);
-  console.log({ data });
+  // console.log({ data });
   if (data == "") {
     return <Loader />;
   }

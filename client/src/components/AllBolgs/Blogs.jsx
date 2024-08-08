@@ -18,7 +18,7 @@ const Blogs = () => {
     window.scroll(0, 0);
     dispatch(getBlogs());
   }, []);
-  console.log(data);
+  console.log(userData);
 
   const handleDelete = (id) => {
     dispatch(deleteBlog(id));

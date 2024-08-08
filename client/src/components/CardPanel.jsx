@@ -11,7 +11,7 @@ const CardPanel = () => {
   useEffect(() => {
     dispatch(getBlogs());
   }, []);
-  console.log(data);
+  // console.log(data);
   return (
     <div>
       <div class="dark:bg-gray-100 dark:text-gray-900 mb-24">

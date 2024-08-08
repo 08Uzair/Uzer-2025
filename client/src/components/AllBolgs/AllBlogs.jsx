@@ -31,7 +31,6 @@ const AllBlogs = () => {
     const profile = JSON.parse(localStorage.getItem("profile"))?.result;
     setUserData(profile);
   }, []);
-
   useEffect(() => {
     window.scroll(0, 0);
     dispatch(getBlogs());

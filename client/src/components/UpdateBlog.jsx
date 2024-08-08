@@ -14,8 +14,7 @@ const UpdateBlog = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cat = useSelector((state) => state?.category);
-  const blog = useSelector((state) => state?.blog?.[0]);
-
+  const blog = useSelector((state) => state.blog.singleBlog);
   useEffect(() => {
     dispatch(getCategory());
   }, [dispatch]);
