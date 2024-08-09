@@ -16,7 +16,7 @@ const UserProfile = () => {
     window.scroll(0, 0);
     dispatch(getBlogs());
   }, [dispatch]);
-  console.log(blogs);
+  // console.log(blogs);
 
   const { id } = useParams();
   const { search } = useLocation();
@@ -130,7 +130,7 @@ const UserProfile = () => {
                               </NavLink>
                               <div className="flex flex-wrap justify-between">
                                 <div className="space-x-2">
-                                  {isSameUser(item.author._id) ? (
+                                  {!isSameUser(item.author._id) ? (
                                     <>
                                       <div>
                                         {open && (
