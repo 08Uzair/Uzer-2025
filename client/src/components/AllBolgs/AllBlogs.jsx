@@ -18,7 +18,7 @@ const AllBlogs = () => {
   const [isSearch, setIsSearch] = useState(false);
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
-
+  const parse = require("html-react-parser").default;
   useEffect(() => {
     const category = queryParams.get("category");
     if (category !== null) {
@@ -166,7 +166,7 @@ const AllBlogs = () => {
                       {item.title}
                     </h2>
                     <p className="text-sm dark:text-gray-600 line-clamp-3">
-                      {item.content}
+                      {parse(item.content)}
                     </p>
                   </div>
                 </NavLink>

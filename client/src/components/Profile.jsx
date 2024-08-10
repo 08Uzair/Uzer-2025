@@ -37,8 +37,8 @@ const Profile = () => {
   };
   const handleDelete = (id) => {
     dispatch(deleteBlog(id));
-    toast.success("Blog Deleted Sucessfully 😊");
     dispatch(getBlogs());
+    toast.success("Blog Deleted Sucessfully 😊");
   };
   const baseUrl = window.location.href.split("allBlogs")[0];
   if (!blogs || !userData) {

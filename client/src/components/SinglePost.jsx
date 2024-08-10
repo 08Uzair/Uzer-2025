@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getBlogByID } from "../redux/actions/blog";
 import { getTime } from "../utilty/getTime";
 import Loader from "../utilty/Loader";
-const SinglePost = () => {
+const SinglePost = ({ placeholder }) => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const data = useSelector((state) => state?.blog?.singleBlog);
   console.log(data);
+
+  const parse = require("html-react-parser").default;
   useEffect(() => {
     window.scroll(0, 0);
     dispatch(getBlogByID(id));
@@ -34,7 +36,7 @@ const SinglePost = () => {
           </div>
         </div>
         <div className="bg-white rounded-xl p-4 prose prose-lg text-gray-700">
-          {data?.content}
+          {parse(data?.content)}
           <div />
         </div>
       </div>
