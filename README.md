@@ -13,7 +13,7 @@ Check our live demo link to explore our web : [LIVE LINK](https://uzerqureshi-bl
 ## [GITHUB REPOSITORY](https://github.com/08Uzair/Uzer-2024-Blog) 🤖
 Explore the code and contribute on our GitHub Repository: MERN BLOG GITHUB
 
-### Short Description with Emojis
+### Short Description 
 📝 Blog App
 
 🚀 Built with MERN & Tailwind
