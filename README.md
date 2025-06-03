@@ -5,7 +5,7 @@ This blog application is a modern, full-stack web application built using the ME
 
 
 ## VIDEO DEMO 📽️
-Check our Youtube Video Link To understand more easily : VIDEO LINK
+Check our Youtube Video Link To understand more easily : [VIDEO LINK](https://www.youtube.com/watch?v=LKaM1KRHbGc)
 
 ## LIVE DEMO 🎥
 Check our live demo link to explore our web : [LIVE LINK](https://uzerqureshi-blog.netlify.app )
@@ -13,7 +13,7 @@ Check our live demo link to explore our web : [LIVE LINK](https://uzerqureshi-bl
 ## [GITHUB REPOSITORY](https://github.com/08Uzair/Uzer-2024-Blog) 🤖
 Explore the code and contribute on our GitHub Repository: MERN BLOG GITHUB
 
-### Short Description with Emojis
+### Short Description 
 📝 Blog App
 
 🚀 Built with MERN & Tailwind
