@@ -2,7 +2,6 @@ import axios from "axios";
 const API = axios.create({
   baseURL: "https://server-1e96.onrender.com/api/v1",
 });
-
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
     req.headers.Authorization = `Bearer ${

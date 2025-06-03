@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import  { useState, useEffect } from "react";
+import { NavLink} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlogs, deleteBlog } from "../redux/actions/blog";
-import { getTime } from "../utilty/getTime";
-
 import Share from "./AllBolgs/Share";
 import { toast } from "react-toastify";
 import Loader from "../utilty/Loader";
+
 const Profile = () => {
   const [userData, setUserData] = useState();
-  const navigate = useNavigate();
+  const parse = require("html-react-parser").default;
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(!open);
+  // const [open, setOpen] = React.useState(false);
+  // const handleOpen = () => setOpen(!open);
   useEffect(() => {
     const profile =
       JSON.parse(localStorage.getItem("profile"))?.result ||
@@ -20,11 +20,11 @@ const Profile = () => {
     setUserData(profile);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
-    window.location.reload();
-  };
+  // const handleLogout = () => {
+  //   localStorage.clear();
+  //   navigate("/");
+  //   window.location.reload();
+  // };
   const blogs = useSelector((state) => state?.blog?.blog?.blog);
   useEffect(() => {
     window.scroll(0, 0);
@@ -73,13 +73,16 @@ const Profile = () => {
                     <>
                       {isSameUser(item?.author?._id) ? (
                         <>
-                          <div className="max-w-[24rem] m-8 overflow-hidden mt-12 bg-white shadow-lg rounded-lg">
+                          <div
+                            key={index}
+                            className="max-w-[24rem] m-8 overflow-hidden mt-12 bg-white shadow-lg rounded-lg"
+                          >
                             <NavLink to={`/singlePost/${item._id}`}>
                               <div className="m-0 rounded-none">
                                 <img
                                   src={item.image}
                                   alt="ui/ux review check"
-                                  className="w-full"
+                                  className="w-full h-[30vh]"
                                 />
                               </div>
                             </NavLink>
@@ -88,14 +91,14 @@ const Profile = () => {
                                 {item.title}
                               </h1>
                               <h2 className="line-clamp-3 mt-3 text-gray-700 font-normal">
-                                {item.content}
+                                {parse(item.content)}
                               </h2>
                             </div>
                             <div className="flex flex-wrap justify-between p-4">
                               <div className="space-x-2">
                                 <Share
                                   title={item.title}
-                                  content={item.content}
+                                  content={parse(item.content)}
                                   url={`${baseUrl}singlePost/${item._id}`}
                                 />
                                 <button

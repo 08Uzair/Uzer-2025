@@ -73,6 +73,15 @@ export const signup = async (req, res) => {
   }
 };
 
+// Sign In 
+// 1. User Exist 
+// if exist then create a token and send the token to the frontend
+// if user not exist then sign up page 
+// take username , email ,password ,  and store them in result variablr 
+// Check it is old user or not 
+// if not then proceed to generating the token using JWT  and store the token in token variable 
+// and at last give the token and result variable as response
+
 //  GET AUTHOR BY ID
 
 export const getAuthorById = async (req, res) => {

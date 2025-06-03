@@ -8,9 +8,10 @@ import ReactQuill from "react-quill";
 import PropTypes from "prop-types";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
+import { uploadImageToCloudinary } from "../utilty/uploadToCloudinary";
 
 const CreateBlog = ({ placeholder }) => {
-  const [step, setStep] = useState(1); // Step state to manage current step
+  const [step, setStep] = useState(1);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
@@ -22,6 +23,23 @@ const CreateBlog = ({ placeholder }) => {
 
   const handleChange = (html) => {
     setEditorHtml(html);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const uploadImage = await uploadImageToCloudinary(file);
+      setImage(uploadImage);
+    }
+  };
+
+  const handleDropImage = async (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const uploaded = await uploadImageToCloudinary(file);
+      setImage(uploaded);
+    }
   };
 
   function blog(html) {
@@ -42,7 +60,6 @@ const CreateBlog = ({ placeholder }) => {
         content,
         image,
       };
-      console.log(newBlog);
       await dispatch(createBlog(newBlog));
       toast.success("Blog Created Successfully 😊");
       setTimeout(() => {
@@ -53,23 +70,16 @@ const CreateBlog = ({ placeholder }) => {
     }
   };
 
-  // Function to handle the "Next" button click
-  const nextStep = () => {
-    setStep(step + 1);
-  };
-
-  // Function to handle the "Previous" button click
-  const prevStep = () => {
-    setStep(step - 1);
-  };
+  const nextStep = () => setStep(step + 1);
+  const prevStep = () => setStep(step - 1);
 
   return (
     <div
-      className="bg-gray-100 flex items-center justify-center"
-      style={{ height: "81vh" }}
+      className="flex items-center justify-center my-5"
+      // style={{ height: "81vh" }}
     >
       <form
-        className="bg-white p-8 rounded shadow-md w-full"
+        className="bg-white p-8 rounded shadow-lg w-full"
         style={{ width: "47rem" }}
       >
         <h2 className="text-2xl font-bold mb-6 text-center">
@@ -119,14 +129,39 @@ const CreateBlog = ({ placeholder }) => {
                 htmlFor="image"
                 className="block text-gray-700 font-bold mb-2"
               >
-                Image URL
+                Upload Image
               </label>
-              <input
-                value={image}
-                type="text"
-                onChange={(e) => setImage(e.target.value)}
-                className="w-full border border-gray-300 rounded py-2 px-3 text-gray-700"
-              />
+
+              {image && (
+                <img
+                  src={image}
+                  alt="Preview"
+                  className="mb-4 w-full h-64 object-cover rounded-md"
+                />
+              )}
+
+              <div
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDropImage}
+                className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 bg-gray-50 text-gray-500 hover:border-blue-400 transition duration-300"
+              >
+                <p className="text-lg text-gray-500">
+                  Drag and drop an image, or click to select
+                </p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="fileInput"
+                />
+                <label
+                  htmlFor="fileInput"
+                  className="mt-2 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+                >
+                  Browse Files
+                </label>
+              </div>
             </div>
 
             <div className="flex items-center justify-center">
@@ -151,9 +186,7 @@ const CreateBlog = ({ placeholder }) => {
                 Content
               </label>
               <ReactQuill
-                onChange={(html) => {
-                  blog(html);
-                }}
+                onChange={(html) => blog(html)}
                 value={editorHtml}
                 modules={CreateBlog.modules}
                 formats={CreateBlog.formats}
@@ -186,10 +219,6 @@ const CreateBlog = ({ placeholder }) => {
   );
 };
 
-/*
- * Quill modules to attach to editor
- * See https://quilljs.com/docs/modules/ for complete options
- */
 CreateBlog.modules = {
   toolbar: [
     [{ header: "1" }, { header: "2" }, { font: [] }],
@@ -205,15 +234,10 @@ CreateBlog.modules = {
     ["clean"],
   ],
   clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   },
 };
 
-/*
- * Quill editor formats
- * See https://quilljs.com/docs/formats/
- */
 CreateBlog.formats = [
   "header",
   "font",
@@ -229,9 +253,6 @@ CreateBlog.formats = [
   "link",
 ];
 
-/*
- * PropType validation
- */
 CreateBlog.propTypes = {
   placeholder: PropTypes.string,
 };

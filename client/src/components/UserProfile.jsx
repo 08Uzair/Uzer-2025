@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardBody } from "@material-tailwind/react";
-import { useLocation, NavLink, useNavigate, useParams } from "react-router-dom";
+import React, {  useEffect } from "react";
+import { useLocation, NavLink,  useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlogs, deleteBlog } from "../redux/actions/blog";
 import { getTime } from "../utilty/getTime";
 import { toast } from "react-toastify";
-import { getUserByID, getUsers } from "../redux/actions/auth";
+import { getUserByID} from "../redux/actions/auth";
 import Share from "./AllBolgs/Share";
 import Loader from "../utilty/Loader";
 const UserProfile = () => {

@@ -16,7 +16,9 @@ const UserCards = () => {
       <div className="flex item-center justify-center mb-6">
         {data?.map((item, index) => {
           return (
-            <div className="max-w-sm mx-auto bg-white shadow-md rounded-lg overflow-hidden p-6 cursor-pointer">
+            <div 
+            key={index}
+            className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden p-6 cursor-pointer">
               <NavLink to={`/userProfile/${item._id}`}>
                 <div className="flex flex-col items-center p-6">
                   <img

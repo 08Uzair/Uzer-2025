@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getCategory } from "../redux/actions/category";
-import { signUp, signin } from "../redux/actions/auth";
+import { authSignIn, authSignUp } from "../redux/actions/auth";
 import { toast } from "react-toastify";
+import { uploadImageToCloudinary } from "../utilty/uploadToCloudinary";
 
 const Auth = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -20,6 +21,15 @@ const Auth = () => {
   useEffect(() => {
     dispatch(getCategory());
   }, [dispatch]);
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const uploadImage = await uploadImageToCloudinary(file);
+      setImage(uploadImage);
+    }
+  };
+
   const handleSignUp = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -32,7 +42,8 @@ const Auth = () => {
         bio,
         category,
       };
-      await dispatch(signUp(newUser));
+      console.log(newUser);
+      await dispatch(authSignUp(newUser));
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -50,7 +61,7 @@ const Auth = () => {
         email,
         password,
       };
-      await dispatch(signin(user));
+      await dispatch(authSignIn(user));
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -63,7 +74,7 @@ const Auth = () => {
   if (!cat) {
     return <>Loading....</>;
   }
-  if (!signin) {
+  if (!authSignIn) {
     return <>Loading....</>;
   }
   return (
@@ -105,6 +116,7 @@ const Auth = () => {
             setCategory={setCategory}
             cat={cat}
             loading={loading}
+            handleImageUpload={handleImageUpload}
           />
         )}
       </div>
@@ -170,6 +182,7 @@ const SignUpForm = ({
   setEmail,
   setPassword,
   setImage,
+  handleImageUpload,
   setBio,
   setCategory,
   cat,
@@ -213,9 +226,9 @@ const SignUpForm = ({
         Profile Avatar
       </label>
       <input
+        type="file"
+        onChange={handleImageUpload}
         className="shadow appearance-none border   w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-        placeholder="Image Url"
-        onChange={(e) => setImage(e.target.value)}
       />
     </div>
     <div className="mb-4">

@@ -11,6 +11,7 @@ import Loader from "../../utilty/Loader.jsx";
 const AllBlogs = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state?.blog?.blog?.blog);
+  console.log(data);
   const navigate = useNavigate();
   const [userData, setUserData] = useState();
   const [query, setQuery] = useState("");
@@ -125,7 +126,7 @@ const AllBlogs = () => {
             {filteredBlogs?.map((item, index) => (
               <div
                 key={index}
-                className="cursor-pointer flex flex-wrap flex-col max-w-sm p-6 space-y-6 overflow-hidden rounded-lg shadow-md dark:bg-gray-50 dark:text-gray-800 mb-10 mr-2 ml-6"
+                className=" flex flex-wrap flex-col max-w-sm p-6 space-y-6 overflow-hidden rounded-lg shadow-md dark:bg-gray-50 dark:text-gray-800 mb-10 mr-2 ml-6"
               >
                 <div className="flex space-x-4">
                   <NavLink to={`/userProfile/${item?.author?._id}`}>
@@ -136,7 +137,7 @@ const AllBlogs = () => {
                     />
                   </NavLink>
                   <div className="flex item-center justify ">
-                    <div className="flex flex-col space-y-1 mr-36">
+                    <div className="flex flex-col space-y-1 mr-[6rem]">
                       <a
                         rel="noopener noreferrer"
                         href="#"
@@ -150,7 +151,7 @@ const AllBlogs = () => {
                     </div>
                     <Share
                       title={item.title}
-                      content={item.content}
+                      content={parse(item.content)}
                       url={`${baseUrl}singlePost/${item._id}`}
                     />
                   </div>
@@ -162,7 +163,7 @@ const AllBlogs = () => {
                       className="object-cover w-full mb-4 h-60 sm:h-90 rounded-xl dark:bg-gray-500"
                       alt={item.title}
                     />
-                    <h2 className="mb-1 text-xl font-semibold line-clamp-1">
+                    <h2 className="mb-1 text-xl font-semibold line-clamp-1 cursor-pointer">
                       {item.title}
                     </h2>
                     <p className="text-sm dark:text-gray-600 line-clamp-3">
