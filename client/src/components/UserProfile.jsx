@@ -1,16 +1,17 @@
-import React, {  useEffect } from "react";
-import { useLocation, NavLink,  useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { NavLink, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlogs, deleteBlog } from "../redux/actions/blog";
 import { getTime } from "../utilty/getTime";
 import { toast } from "react-toastify";
-import { getUserByID} from "../redux/actions/auth";
+import { getUserByID } from "../redux/actions/auth";
 import Share from "./AllBolgs/Share";
 import Loader from "../utilty/Loader";
 const UserProfile = () => {
   const [open, setOpen] = React.useState(false);
   const blogs = useSelector((state) => state?.blog?.blog.blog);
   const dispatch = useDispatch();
+  const parse = require("html-react-parser").default;
   useEffect(() => {
     window.scroll(0, 0);
     dispatch(getBlogs());
@@ -18,8 +19,8 @@ const UserProfile = () => {
   // console.log(blogs);
 
   const { id } = useParams();
-  const { search } = useLocation();
-  const queryParams = new URLSearchParams(search);
+  // const { search } = useLocation();
+  // const queryParams = new URLSearchParams(search);
   const data = useSelector((state) => state?.auth[0]);
   useEffect(() => {
     dispatch(getUserByID(id));
@@ -44,13 +45,13 @@ const UserProfile = () => {
   return (
     <>
       <div className="p-16">
-        <div className="p-8 bg-white shadow mt-24">
+        <div className="p-8 bg-white relative border-2 border-gray-200 rounded-[15px] mt-24">
           <div className="mt-20 text-center border-b pb-12">
             <div>
               <div>
                 <div>
                   <img
-                    src={data?.image}
+                    src={data?.image || "https://res.cloudinary.com/dyphiefiy/image/upload/v1753491009/images_exk1wk.jpg"}
                     alt="User Icon"
                     className="object-cover w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500"
                   />
@@ -123,7 +124,7 @@ const UserProfile = () => {
                                     {item.title}
                                   </h2>
                                   <p className="text-sm dark:text-gray-600 line-clamp-3">
-                                    {item.content}
+                                    {parse(item.content)}
                                   </p>
                                 </div>
                               </NavLink>
@@ -228,7 +229,7 @@ const UserProfile = () => {
               connecting the world one post at a time."
             </p>
             <NavLink className="text-center" to="/allBlogs">
-              <button className="text-indigo-500 py-2 px-4 font-medium mt-4">
+              <button className="text-indigo-500 py-2 px-4 font-medium mt-4 border-2 border-gray-200 rounded-[15px]">
                 BACK
               </button>
             </NavLink>

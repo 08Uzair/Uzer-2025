@@ -5,7 +5,6 @@ import { getBlogs } from "../../redux/actions/blog.js";
 import Share from "./Share.jsx";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { getCategory } from "../../redux/actions/category.js";
-import { toast } from "react-toastify";
 import Loader from "../../utilty/Loader.jsx";
 
 const AllBlogs = () => {
@@ -16,7 +15,7 @@ const AllBlogs = () => {
   const [userData, setUserData] = useState();
   const [query, setQuery] = useState("");
   // const [open, setOpen] = React.useState(false);
-  const [isSearch, setIsSearch] = useState(false);
+  const [setIsSearch] = useState(false);
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const parse = require("html-react-parser").default;
@@ -132,7 +131,10 @@ const AllBlogs = () => {
                   <NavLink to={`/userProfile/${item?.author?._id}`}>
                     <img
                       className="object-cover w-12 h-12 rounded-full shadow dark:bg-gray-500"
-                      src={item?.author?.image}
+                      src={
+                        item?.author?.image ||
+                        "https://res.cloudinary.com/dyphiefiy/image/upload/v1753491009/images_exk1wk.jpg"
+                      }
                       alt={item?.author?.name}
                     />
                   </NavLink>

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getCategory } from "../redux/actions/category";
 import { authSignIn, authSignUp } from "../redux/actions/auth";
-import { toast } from "react-toastify";
 import { uploadImageToCloudinary } from "../utilty/uploadToCloudinary";
 
 const Auth = () => {
@@ -15,9 +14,11 @@ const Auth = () => {
   const [bio, setBio] = useState("");
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cat = useSelector((state) => state?.category);
+
   useEffect(() => {
     dispatch(getCategory());
   }, [dispatch]);
@@ -31,73 +32,61 @@ const Auth = () => {
   };
 
   const handleSignUp = async (e) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
     try {
-      const newUser = {
-        name,
-        email,
-        password,
-        image,
-        bio,
-        category,
-      };
-      console.log(newUser);
+      const newUser = { name, email, password, image, bio, category };
       await dispatch(authSignUp(newUser));
-      setLoading(false);
+      navigate("/");
     } catch (error) {
-      setLoading(false);
-      console.log(error);
+      console.error("Sign Up Error:", error);
     } finally {
       setLoading(false);
     }
-    window.location.reload();
   };
+
   const handleSignIn = async (e) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
     try {
-      const user = {
-        email,
-        password,
-      };
+      const user = { email, password };
       await dispatch(authSignIn(user));
-      setLoading(false);
+      navigate("/");
     } catch (error) {
-      setLoading(false);
-      console.log(error);
+      console.error("Sign In Error:", error);
     } finally {
       setLoading(false);
     }
-    window.location.reload();
   };
-  if (!cat) {
-    return <>Loading....</>;
-  }
-  if (!authSignIn) {
-    return <>Loading....</>;
-  }
+
+  if (!cat) return <div>Loading...</div>;
+
   return (
-    <div className="min-h-screen flex items-center justify-center ">
-      <div className="bg-white p-8 shadow-md w-full max-w-md">
-        <div className="flex justify-center mb-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white shadow-lg border border-gray-200 rounded-lg max-w-md w-full p-8">
+        <div className="flex justify-center mb-6 gap-4">
           <button
             onClick={() => setIsSignIn(true)}
-            className={`px-4 py-2 text-lg font-semibold ${
-              isSignIn ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
-            }  -l`}
+            className={`w-full py-2 rounded font-semibold transition ${
+              isSignIn
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
           >
             Sign In
           </button>
           <button
             onClick={() => setIsSignIn(false)}
-            className={`px-4 py-2 text-lg font-semibold ${
-              !isSignIn ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
-            }  -r`}
+            className={`w-full py-2 rounded font-semibold transition ${
+              !isSignIn
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
           >
             Sign Up
           </button>
         </div>
+
         {isSignIn ? (
           <SignInForm
             handleSignIn={handleSignIn}
@@ -111,12 +100,11 @@ const Auth = () => {
             setName={setName}
             setEmail={setEmail}
             setPassword={setPassword}
-            setImage={setImage}
             setBio={setBio}
             setCategory={setCategory}
-            cat={cat}
-            loading={loading}
             handleImageUpload={handleImageUpload}
+            loading={loading}
+            cat={cat}
           />
         )}
       </div>
@@ -125,150 +113,250 @@ const Auth = () => {
 };
 
 const SignInForm = ({ handleSignIn, setEmail, setPassword, loading }) => (
-  <form onSubmit={handleSignIn}>
-    <div className="mb-4">
-      <label
-        className="block text-gray-700 text-sm font-bold mb-2"
-        htmlFor="email"
-      >
-        Email
-      </label>
+  <form onSubmit={handleSignIn} className="space-y-4">
+    <div>
+      <label className="block text-sm font-semibold text-gray-700">Email</label>
       <input
-        onChange={(e) => setEmail(e.target.value)}
-        className="shadow appearance-none border   w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="email"
         type="email"
-        placeholder="Email"
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder="Enter your email"
       />
     </div>
-    <div className="mb-4">
-      <label
-        className="block text-gray-700 text-sm font-bold mb-2"
-        htmlFor="password"
-      >
+
+    <div>
+      <label className="block text-sm font-semibold text-gray-700">
         Password
       </label>
       <input
-        onChange={(e) => setPassword(e.target.value)}
-        className="shadow appearance-none border   w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-        id="password"
         type="password"
-        placeholder="Password"
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder="Enter your password"
       />
     </div>
-    <div className="flex items-center justify-between">
+
+    <div className="flex justify-between items-center mt-4">
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   focus:outline-none focus:shadow-outline"
-        type="button"
-        onClick={handleSignIn}
+        type="submit"
         disabled={loading}
+        className="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition"
       >
-        {loading ? "Signing in..." : "Signin"}
+        {loading ? "Signing In..." : "Sign In"}
       </button>
-      <a
-        className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-        href="#"
-      >
-        Forgot Password?
-      </a>
     </div>
   </form>
 );
 
 const SignUpForm = ({
   handleSignUp,
-  loading,
   setName,
   setEmail,
   setPassword,
-  setImage,
-  handleImageUpload,
   setBio,
   setCategory,
+  handleImageUpload,
+  loading,
   cat,
-}) => (
-  <form onSubmit={handleSignUp}>
-    <div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2">
-        Username
-      </label>
-      <input
-        className="shadow appearance-none border   w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        type="text"
-        placeholder="Username"
-        onChange={(e) => setName(e.target.value)}
-      />
-    </div>
-    <div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2">
-        Email
-      </label>
-      <input
-        className="shadow appearance-none border   w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-    </div>
-    <div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2">
-        Password
-      </label>
-      <input
-        className="shadow appearance-none border   w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-    </div>
-    <div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2">
-        Profile Avatar
-      </label>
-      <input
-        type="file"
-        onChange={handleImageUpload}
-        className="shadow appearance-none border   w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-      />
-    </div>
-    <div className="mb-4">
-      <label htmlFor="category" className="block text-gray-700 font-bold mb-2">
-        Category
-      </label>
+}) => {
+  const [step, setStep] = useState(1);
+  const [dragActive, setDragActive] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
-      <select
-        onChange={(e) => setCategory(e.target.value)}
-        className="w-full border border-gray-300   py-2 px-3 text-gray-700"
-      >
-        <option value="">Select a category</option>
+  const nextStep = () => setStep((prev) => prev + 1);
+  const prevStep = () => setStep((prev) => prev - 1);
 
-        {cat?.map((item, index) => {
-          return (
-            <>
-              <option value={item._id}>{item.name}</option>
-            </>
-          );
-        })}
-      </select>
-    </div>
-    <div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2">Bio</label>
-      <textarea
-        className="shadow appearance-none border   w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-        placeholder="Bio"
-        onChange={(e) => setBio(e.target.value)}
-      />
-    </div>
-    <div className="flex items-center justify-between">
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   focus:outline-none focus:shadow-outline"
-        type="submit"
-        disabled={loading}
-      >
-        {loading ? "Signing up..." : "Signup"}
-      </button>
-    </div>
-  </form>
-);
+  const handleFileChange = async (file) => {
+    if (!file) return;
+    const fakeEvent = { target: { files: [file] } };
+    await handleImageUpload(fakeEvent);
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const onDrop = async (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    const file = e.dataTransfer.files[0];
+    if (file) await handleFileChange(file);
+  };
+
+  const onDragOver = (e) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const onDragLeave = () => setDragActive(false);
+
+  return (
+    <form onSubmit={handleSignUp} className="space-y-4">
+      {step === 1 && (
+        <>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Username
+              </label>
+              <input
+                type="text"
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="mt-1 w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Enter username"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="mt-1 w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Enter email"
+              />
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={nextStep}
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          >
+            Next
+          </button>
+        </>
+      )}
+
+      {step === 2 && (
+        <>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="mt-1 w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Enter password"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Profile Image
+              </label>
+              <div
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                onDragLeave={onDragLeave}
+                className={`mt-1 w-full border-2 border-dashed ${
+                  dragActive ? "border-blue-400 bg-blue-50" : "border-gray-300"
+                } rounded px-3 py-6 text-center cursor-pointer flex items-center justify-center`}
+                onClick={() => document.getElementById("fileInput").click()}
+              >
+                {previewImage ? (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="h-24 w-24 object-cover rounded-full"
+                  />
+                ) : (
+                  <p className="text-gray-500">
+                    Drag and drop or click to upload
+                  </p>
+                )}
+                <input
+                  type="file"
+                  id="fileInput"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFileChange(e.target.files[0])}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between gap-4">
+            <button
+              type="button"
+              onClick={prevStep}
+              className="w-full bg-gray-300 text-gray-800 py-2 rounded hover:bg-gray-400"
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              onClick={nextStep}
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
+
+      {step === 3 && (
+        <>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Category
+              </label>
+              <select
+                onChange={(e) => setCategory(e.target.value)}
+                className="mt-1 w-full border border-gray-300 rounded px-3 py-2 bg-white"
+                required
+              >
+                <option value="">Select category</option>
+                {cat?.map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Bio</label>
+              <textarea
+                onChange={(e) => setBio(e.target.value)}
+                rows={3}
+                className="mt-1 w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Tell us about yourself"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-between gap-4">
+            <button
+              type="button"
+              onClick={prevStep}
+              className="w-full bg-gray-300 text-gray-800 py-2 rounded hover:bg-gray-400"
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700 transition"
+            >
+              {loading ? "Signing Up..." : "Sign Up"}
+            </button>
+          </div>
+        </>
+      )}
+    </form>
+  );
+};
 
 export default Auth;

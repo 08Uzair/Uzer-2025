@@ -43,7 +43,7 @@
 //               key={index}
 //                className=" flex flex-wrap flex-col max-w-sm p-6 space-y-6 overflow-hidden rounded-lg shadow-md dark:bg-gray-50 dark:text-gray-800 mb-10 mr-2 ml-6">
 //                 <div className="flex space-x-4">
-//                 {/* https://archive.org/details/bhaag-milkha-bhaag-2013-blu-ray-1080p-hindi-dd-5.1-x-264-esub-mkv-cinemas-telly */}
+//                
 //                   <img
 //                     className="object-cover w-12 h-12 rounded-full shadow dark:bg-gray-500"
 //                     src={item?.author?.image}

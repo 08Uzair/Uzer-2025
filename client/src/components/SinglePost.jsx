@@ -21,7 +21,7 @@ const SinglePost = ({ placeholder }) => {
   }
   return (
     <>
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6 ">
         <div className="mb-8">
           <img
             src={data?.image}
@@ -29,13 +29,13 @@ const SinglePost = ({ placeholder }) => {
           />
         </div>
         <div className="mb-4">
-          <h1 className="text-3xl font-bold text-gray-800">{data?.title}</h1>
+          <h1 className="text-3xl font-bold text-gray-800 text-gray-600 bg-white rounded-xl p-2  border-2 border-gray-100">{data?.title}</h1>
           <div className="flex items-center space-x-4 mt-2">
-            <span className="text-gray-600">By {data?.author?.name}</span>
-            <span className="text-gray-600">{getTime(data?.createdAt)}</span>
+            <span className="text-gray-600 bg-white rounded-xl p-2  border-2 border-gray-100">By {data?.author?.name}</span>
+            <span className="text-gray-600 text-gray-600 bg-white rounded-xl p-2  border-2 border-gray-100">{getTime(data?.createdAt)}</span>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 prose prose-lg text-gray-700">
+        <div className="bg-white rounded-xl p-4 prose prose-lg text-gray-700 border-2 border-gray-100">
           {parse(data?.content)}
           <div />
         </div>

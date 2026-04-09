@@ -47,15 +47,15 @@ const Profile = () => {
   return (
     <>
       <div className="p-16">
-        <div className="p-8 bg-white shadow mt-24">
+        <div className="p-8 bg-white relative mt-24 border-2 border-gray-200 rounded-[15px]">
           <div className="mt-20 text-center border-b pb-12">
             <div>
               <div>
                 <div>
                   <img
-                    src={userData?.image}
+                    src={userData?.image || "https://res.cloudinary.com/dyphiefiy/image/upload/v1753491009/images_exk1wk.jpg"}
                     alt="User Icon"
-                    className="object-cover w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500"
+                    className="object-cover w-48 h-48 bg-indigo-100 mx-auto border-[5px] border-gray-500  rounded-full shadow-2xl absoslute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500"
                   />
                 </div>
               </div>
@@ -152,7 +152,7 @@ const Profile = () => {
               connecting the world one post at a time."
             </p>
             <NavLink className="text-center" to="/allBlogs">
-              <button className="text-indigo-500 py-2 px-4 font-medium mt-4">
+              <button className="text-indigo-500 py-2 px-4 font-medium mt-4 border-2 border-gray-200 rounded-[15px]">
                 BACK
               </button>
             </NavLink>

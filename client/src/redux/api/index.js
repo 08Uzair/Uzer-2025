@@ -1,6 +1,8 @@
 import axios from "axios";
 const API = axios.create({
-  baseURL: "https://server-1e96.onrender.com/api/v1",
+  // baseURL: "https://blog-application-server.up.railway.app/api/v1",
+   baseURL: "http://localhost:8810/api/v1/",
+    // baseURL: "https://uzer-blog-server.vercel.app/api/v1/",
 });
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {

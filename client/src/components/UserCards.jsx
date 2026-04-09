@@ -23,7 +23,7 @@ const UserCards = () => {
                 <div className="flex flex-col items-center p-6">
                   <img
                     className="w-24 h-24 rounded-full object-cover"
-                    src={item.image}
+                    src={item.image || "https://res.cloudinary.com/dyphiefiy/image/upload/v1753491009/images_exk1wk.jpg"}
                   />
                   <h2 className="mt-4 text-xl font-semibold text-gray-900">
                     {item.name}
