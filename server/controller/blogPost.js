@@ -2,8 +2,10 @@ import { blogPost } from "../models/blog.js";
 // Add Blog
 export const addBlog = async (req, res) => {
   // console.log(req.body);
-  const author = req.userId;
-  const { title, image, content, category } = req.body;
+  // const author = req.userId;
+  const { title, image, content, category ,author} = req.body;
+ 
+      
   const saveData = new blogPost({
     title,
     image,

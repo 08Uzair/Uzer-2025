@@ -20,6 +20,7 @@ const CreateBlog = ({ placeholder }) => {
   const dispatch = useDispatch();
   const cat = useSelector((state) => state?.category);
   const [editorHtml, setEditorHtml] = useState("");
+  const profile = JSON.parse(localStorage.getItem("profile"));
 
   const handleChange = (html) => {
     setEditorHtml(html);
@@ -59,8 +60,10 @@ const CreateBlog = ({ placeholder }) => {
         title,
         content,
         image,
+        author: profile?.result?._id,
       };
       await dispatch(createBlog(newBlog));
+      console.log(newBlog, "This is Blog Data");
       toast.success("Blog Created Successfully 😊");
       setTimeout(() => {
         navigate("/allBlogs");

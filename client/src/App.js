@@ -14,6 +14,7 @@ import UserProfile from "./components/UserProfile";
 import UpdateBlog from "./components/UpdateBlog";
 import { Bookmark } from "./components/Bookmarks";
 import Footer from "./components/Footer";
+import BlogAgent from "./components/BlogAgent";
 function App() {
   const profile = JSON.parse(localStorage.getItem("profile"));
   let isAuthenticated;
@@ -51,6 +52,7 @@ function App() {
           <Route path="/userProfile/:id" element={<UserProfile />} />
           <Route path="/updatePost/:id" element={<UpdateBlog />} />
         </Routes>
+        <BlogAgent />
         <Footer />
       </BrowserRouter>
     </>
