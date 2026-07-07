@@ -17,7 +17,6 @@ export const authSignUp = (newUser) => async (dispatch) => {
   try {
     const { data } = await api.signUp(newUser);
     dispatch({ type: AUTH, payload: data });
-    toast.success("Register Sucessfully");
   } catch (error) {
     console.log(error);
   }

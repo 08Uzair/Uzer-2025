@@ -1,243 +1,304 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getBlogs, deleteBlog } from "../redux/actions/blog";
-import { getTime } from "../utilty/getTime";
-import { toast } from "react-toastify";
+import { getBlogs } from "../redux/actions/blog";
 import { getUserByID } from "../redux/actions/auth";
 import Share from "./AllBolgs/Share";
 import Loader from "../utilty/Loader";
+import { ArrowLeft, Mail, BookOpen } from "lucide-react";
+
+// ─── Animated Background (same as Profile) ────────────────────────────────
+function AnimatedBg() {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      <div
+        className="absolute rounded-full opacity-[0.07]"
+        style={{
+          width: "600px",
+          height: "600px",
+          top: "-100px",
+          left: "-150px",
+          background: "radial-gradient(circle, #ffffff 0%, transparent 70%)",
+          animation: "orbFloat1 12s ease-in-out infinite",
+        }}
+      />
+      <div
+        className="absolute rounded-full opacity-[0.05]"
+        style={{
+          width: "700px",
+          height: "700px",
+          bottom: "-200px",
+          right: "-200px",
+          background: "radial-gradient(circle, #ffffff 0%, transparent 70%)",
+          animation: "orbFloat2 16s ease-in-out infinite",
+        }}
+      />
+      <div
+        className="absolute rounded-full opacity-[0.04]"
+        style={{
+          width: "400px",
+          height: "400px",
+          top: "30%",
+          left: "40%",
+          background: "radial-gradient(circle, #aaaaaa 0%, transparent 70%)",
+          animation: "orbFloat3 20s ease-in-out infinite",
+        }}
+      />
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
+          backgroundSize: "60px 60px",
+        }}
+      />
+      <style>{`
+        @keyframes orbFloat1 {
+          0%,100%{transform:translate(0,0) scale(1)}
+          33%{transform:translate(60px,40px) scale(1.05)}
+          66%{transform:translate(-30px,70px) scale(0.97)}
+        }
+        @keyframes orbFloat2 {
+          0%,100%{transform:translate(0,0) scale(1)}
+          33%{transform:translate(-80px,-50px) scale(1.08)}
+          66%{transform:translate(40px,-80px) scale(0.95)}
+        }
+        @keyframes orbFloat3 {
+          0%,100%{transform:translate(0,0) scale(1)}
+          50%{transform:translate(-60px,60px) scale(1.1)}
+        }
+      `}</style>
+    </div>
+  );
+}
+
 const UserProfile = () => {
-  const [open, setOpen] = React.useState(false);
-  const blogs = useSelector((state) => state?.blog?.blog.blog);
+  const { id } = useParams();
   const dispatch = useDispatch();
   const parse = require("html-react-parser").default;
+
+  const blogs = useSelector((state) => state?.blog?.blog?.blog);
+  const data = useSelector((state) => state?.auth[0]);
+
   useEffect(() => {
     window.scroll(0, 0);
     dispatch(getBlogs());
   }, [dispatch]);
-  // console.log(blogs);
 
-  const { id } = useParams();
-  // const { search } = useLocation();
-  // const queryParams = new URLSearchParams(search);
-  const data = useSelector((state) => state?.auth[0]);
   useEffect(() => {
     dispatch(getUserByID(id));
   }, [dispatch, id]);
-  // console.log(data);
 
-  const handleDelete = (id) => {
-    dispatch(deleteBlog(id));
-    toast.success("Blog Deleted Successfully 😊");
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
-  };
+  const isSameUser = (authorId) => id === authorId;
+
   const baseUrl = window.location.href.split("allBlogs")[0];
-  const isSameUser = (authorId) => {
-    return id === authorId;
-  };
-  const handleOpen = () => setOpen(!open);
-  if (!blogs || !data) {
-    return <Loader />;
-  }
-  return (
-    <>
-      <div className="p-16">
-        <div className="p-8 bg-white relative border-2 border-gray-200 rounded-[15px] mt-24">
-          <div className="mt-20 text-center border-b pb-12">
-            <div>
-              <div>
-                <div>
-                  <img
-                    src={data?.image || "https://res.cloudinary.com/dyphiefiy/image/upload/v1753491009/images_exk1wk.jpg"}
-                    alt="User Icon"
-                    className="object-cover w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500"
-                  />
-                </div>
-              </div>
-              <h1 className="text-4xl font-medium text-gray-700">
-                {data?.name}
-                <span className="font-light text-gray-500">27</span>
-              </h1>
-              <p className="font-light text-gray-600 mt-3">{data?.email}</p>
-              <p className="mt-8 text-gray-500">{data?.bio}</p>
-              <p className="mt-2 text-gray-500">You Can Connect Me</p>
-            </div>
-            <div>
-              <div className="flex justify-center item-center flex-wrap">
-                {blogs?.map((item, index) => {
-                  console.log(item?.author?._id);
-                  return (
-                    <>
-                      {isSameUser(item?.author?._id) ? (
-                        <>
-                          <div className="flex flex-wrap item-center justify-center mt-24 mb-24">
-                            <div
-                              key={index}
-                              className="cursor-pointer flex flex-wrap flex-col max-w-sm p-6 space-y-6 overflow-hidden rounded-lg shadow-md dark:bg-gray-50 dark:text-gray-800 mb-10 mr-2 ml-6"
-                            >
-                              <div className="flex space-x-4">
-                                {/* <NavLink
-                                  to={`/userProfile/${item?.author?._id}`}
-                                >
-                                  <img
-                                    className="object-cover w-12 h-12 rounded-full shadow dark:bg-gray-500"
-                                    src={item?.author?.image}
-                                    alt={item?.author?.name}
-                                  />
-                                </NavLink> */}
+  const userBlogs =
+    blogs?.filter((item) => isSameUser(item?.author?._id)) || [];
 
-                                <div className="flex flex-col space-y-1">
-                                  {/* <a
-                                    rel="noopener noreferrer"
-                                    href="#"
-                                    className="text-sm font-semibold"
-                                  >
-                                    {item?.author?.name}
-                                  </a> */}
-                                  <span
-                                    className="text-xs dark:text-gray-600 relative"
-                                    style={{
-                                      left: "-7rem",
-                                      top: "-23rem",
-                                      background: "black",
-                                      border: "1px solid",
-                                      color: "#fff",
-                                      padding: "4px",
-                                      "border-radius": "6px",
-                                    }}
-                                  >
-                                    {getTime(item.createdAt)}
-                                  </span>
-                                </div>
-                              </div>
-                              <NavLink to={`/singlePost/${item?._id}`}>
-                                <div>
-                                  <img
-                                    src={item.image}
-                                    className="object-cover w-full mb-4 h-60 sm:h-90 rounded-xl dark:bg-gray-500"
-                                    alt={item.title}
-                                  />
-                                  <h2 className="mb-1 text-xl font-semibold line-clamp-1">
-                                    {item.title}
-                                  </h2>
-                                  <p className="text-sm dark:text-gray-600 line-clamp-3">
-                                    {parse(item.content)}
-                                  </p>
-                                </div>
-                              </NavLink>
-                              <div className="flex flex-wrap justify-between">
-                                <div className="space-x-2">
-                                  {!isSameUser(item.author._id) ? (
-                                    <>
-                                      <div>
-                                        {open && (
-                                          <div className="fixed inset-0 flex items-center justify-center z-50">
-                                            <div className="absolute inset-0 bg-black opacity-50"></div>
-                                            <div className="bg-white rounded-lg shadow-lg max-w-lg w-full z-10">
-                                              <div className="text-xl font-black p-5 text-center">
-                                                Do You Want to Delete the Blog?
-                                              </div>
-                                              <div className="px-4 py-2 border-t flex justify-end">
-                                                <button
-                                                  onClick={handleOpen}
-                                                  className="text-gray-500 p-4 mr-2"
-                                                >
-                                                  Cancel
-                                                </button>
-                                                <button
-                                                  onClick={() =>
-                                                    handleDelete(item._id)
-                                                  }
-                                                  className="bg-red-700 text-white rounded w-1/5"
-                                                >
-                                                  Delete
-                                                </button>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        )}
-                                      </div>
-                                      <button
-                                        aria-label="delete the post"
-                                        type="button"
-                                        className="p-2"
-                                        onClick={handleOpen}
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          viewBox="0 0 24 24"
-                                          className="w-5 h-5 fill-current dark:text-violet-600 hover:text-red-600"
-                                        >
-                                          <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
-                                          <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
-                                        </svg>
-                                      </button>
-                                      <NavLink to={`/updatePost/${item._id}`}>
-                                        <button
-                                          aria-label="Edit this post"
-                                          type="button"
-                                          className="p-2"
-                                        >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            className="w-5 h-5 fill-current dark:text-violet-600 hover:text-green-600"
-                                          >
-                                            <path d="M19.045 7.401c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.378-.378-.88-.586-1.414-.586s-1.036.208-1.413.585L4 13.585V18h4.413L19.045 7.401zm-3-3 1.587 1.585-1.59 1.584-1.586-1.585 1.589-1.584zM6 16v-1.585l7.04-7.018 1.586 1.586L7.587 16H6zm-2 4h16v2H4z"></path>
-                                          </svg>
-                                        </button>
-                                      </NavLink>
-                                      <Share
-                                        title={item.title}
-                                        content={item.content}
-                                        url={`${baseUrl}singlePost/${item._id}`}
-                                      />
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Share
-                                        title={item.title}
-                                        content={item.content}
-                                        url={`${baseUrl}singlePost/${item._id}`}
-                                      />
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                    </>
-                  );
-                })}
+  if (!blogs || !data) return <Loader />;
+
+  return (
+    <div className="min-h-screen relative" style={{ background: "#0a0a0a" }}>
+      <AnimatedBg />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-4 py-10 pt-24">
+        {/* ── Profile Hero Card ── */}
+        <div
+          className="rounded-3xl border border-white/10 overflow-hidden mb-8 backdrop-blur-sm"
+          style={{ background: "rgba(255,255,255,0.04)" }}
+        >
+          {/* Banner */}
+          <div
+            className="h-36 w-full relative"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)",
+              borderBottom: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            {/* subtle grain */}
+            <div
+              className="absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+              }}
+            />
+          </div>
+
+          {/* Avatar + Info */}
+          <div className="px-8 pb-8">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 -mt-14 mb-6">
+              {/* Avatar */}
+              <div className="relative w-fit">
+                <img
+                  src={
+                    data?.image ||
+                    "https://res.cloudinary.com/dyphiefiy/image/upload/v1753491009/images_exk1wk.jpg"
+                  }
+                  alt={data?.name}
+                  className="w-28 h-28 rounded-2xl object-cover border-2 border-white/15 shadow-2xl"
+                  style={{
+                    boxShadow:
+                      "0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1)",
+                  }}
+                />
+                {/* online dot */}
+                <span className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-white/70 border-2 border-black" />
+              </div>
+
+              {/* Back button */}
+              <NavLink to="/allBlogs">
+                <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 text-white/50 hover:text-white hover:border-white/25 hover:bg-white/5 transition-all text-sm">
+                  <ArrowLeft size={14} />
+                  All Blogs
+                </button>
+              </NavLink>
+            </div>
+
+            {/* Name + meta */}
+            <h1 className="text-2xl font-semibold text-white mb-1">
+              {data?.name}
+            </h1>
+            <div className="flex items-center gap-2 text-white/40 text-sm mb-3">
+              <Mail size={13} />
+              <span>{data?.email}</span>
+            </div>
+            {data?.bio && (
+              <p className="text-white/50 text-sm leading-relaxed max-w-xl">
+                {data?.bio}
+              </p>
+            )}
+
+            {/* Stats row */}
+            <div className="flex gap-6 mt-6 pt-6 border-t border-white/8">
+              <div>
+                <p className="text-xl font-semibold text-white">
+                  {userBlogs.length}
+                </p>
+                <p className="text-xs text-white/35 mt-0.5">Posts</p>
+              </div>
+              <div className="w-px bg-white/8" />
+              <div>
+                <p className="text-xl font-semibold text-white">
+                  {userBlogs.reduce(
+                    (acc, b) => acc + (b.likes?.length || 0),
+                    0,
+                  )}
+                </p>
+                <p className="text-xs text-white/35 mt-0.5">Total Likes</p>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="mt-12 flex flex-col justify-center">
-            <p className="text-gray-600 text-center font-light lg:px-16">
-              "Bloggers are the modern-day storytellers, weaving threads of
-              knowledge, experience, and creativity into the vast tapestry of
-              the internet. Their words have the power to inform, inspire, and
-              ignite change, turning the ordinary into the extraordinary and
-              connecting the world one post at a time."
+        {/* ── Posts Section ── */}
+        {userBlogs.length > 0 ? (
+          <div>
+            <div className="flex items-center gap-2 mb-5">
+              <BookOpen size={15} className="text-white/30" />
+              <h2 className="text-sm font-medium text-white/40 uppercase tracking-wider">
+                {data?.name}'s Posts
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {userBlogs.map((item, index) => (
+                <div
+                  key={item._id || index}
+                  className="group rounded-2xl border border-white/10 overflow-hidden hover:border-white/20 hover:-translate-y-0.5 transition-all backdrop-blur-sm"
+                  style={{ background: "rgba(255,255,255,0.04)" }}
+                >
+                  {/* Image */}
+                  <NavLink to={`/singlePost/${item._id}`}>
+                    <div className="relative h-44 overflow-hidden border-b border-white/8">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover grayscale-[30%] contrast-110 group-hover:scale-[1.03] transition-transform duration-500"
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://res.cloudinary.com/dyphiefiy/image/upload/v1753491009/images_exk1wk.jpg";
+                        }}
+                      />
+                      {/* category badge */}
+                      {item.category && (
+                        <span className="absolute top-3 left-3 bg-white/10 backdrop-blur-sm text-white text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full border border-white/15">
+                          {typeof item.category === "object"
+                            ? item.category?.name
+                            : item.category}
+                        </span>
+                      )}
+                    </div>
+                  </NavLink>
+
+                  {/* Content */}
+                  <div className="p-4">
+                    <NavLink to={`/singlePost/${item._id}`}>
+                      <h3 className="text-[14px] font-semibold text-white leading-snug line-clamp-2 hover:text-white/80 transition-colors mb-2">
+                        {item.title}
+                      </h3>
+                    </NavLink>
+                    <p className="text-[12px] text-white/40 line-clamp-2 leading-relaxed">
+                      {typeof item.content === "string"
+                        ? item.content
+                            .replace(/<[^>]*>/g, " ")
+                            .replace(/\s+/g, " ")
+                            .trim()
+                            .slice(0, 100)
+                        : ""}
+                    </p>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/8">
+                      <div className="flex items-center gap-1.5">
+                        {item.likes?.length > 0 && (
+                          <span className="text-[11px] text-white/30">
+                            ♥ {item.likes.length}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Share
+                          title={item.title}
+                          content={parse(item.content)}
+                          url={`${baseUrl}singlePost/${item._id}`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* Empty state */
+          <div
+            className="rounded-3xl border border-white/8 p-16 text-center backdrop-blur-sm"
+            style={{ background: "rgba(255,255,255,0.02)" }}
+          >
+            <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4">
+              <BookOpen size={22} className="text-white/25" />
+            </div>
+            <p className="text-white/30 text-sm mb-1">No posts yet</p>
+            <p className="text-white/15 text-xs">
+              {data?.name}'s published blogs will appear here
             </p>
-            <NavLink className="text-center" to="/allBlogs">
-              <button className="text-indigo-500 py-2 px-4 font-medium mt-4 border-2 border-gray-200 rounded-[15px]">
-                BACK
+            <NavLink to="/allBlogs">
+              <button className="mt-6 px-5 py-2 rounded-xl border border-white/10 text-white/40 hover:text-white hover:border-white/25 hover:bg-white/5 transition-all text-sm">
+                Browse Blogs
               </button>
             </NavLink>
           </div>
-        </div>
+        )}
+
+        {/* ── Quote footer ── */}
+        <p className="text-center text-white/15 text-xs leading-relaxed mt-12 max-w-xl mx-auto">
+          "Bloggers are the modern-day storytellers, weaving threads of
+          knowledge, experience, and creativity into the vast tapestry of the
+          internet."
+        </p>
       </div>
-      ;
-    </>
+    </div>
   );
 };
 

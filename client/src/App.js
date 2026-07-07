@@ -15,6 +15,7 @@ import UpdateBlog from "./components/UpdateBlog";
 import { Bookmark } from "./components/Bookmarks";
 import Footer from "./components/Footer";
 import BlogAgent from "./components/BlogAgent";
+import AnimatedBackground from "./components/AnimatedBackground";
 function App() {
   const profile = JSON.parse(localStorage.getItem("profile"));
   let isAuthenticated;
@@ -28,6 +29,7 @@ function App() {
     <>
       <ToastContainer />
       <BrowserRouter>
+      <AnimatedBackground/>
         <Navbar />
         <Routes>
           <Route path="/" element={<Main />} />
@@ -48,11 +50,15 @@ function App() {
             path="/bookmarks"
             element={isAuthenticated ? <Bookmark /> : <Navigate to="/auth" />}
           />
+          <Route
+            path="/ask-blogii"
+            element={isAuthenticated ? <BlogAgent /> : <Navigate to="/auth" />}
+          />
           <Route path="/singlePost/:id" element={<SinglePost />} />
           <Route path="/userProfile/:id" element={<UserProfile />} />
           <Route path="/updatePost/:id" element={<UpdateBlog />} />
         </Routes>
-        <BlogAgent />
+
         <Footer />
       </BrowserRouter>
     </>

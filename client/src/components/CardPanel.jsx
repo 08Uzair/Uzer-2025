@@ -3,8 +3,43 @@ import { useDispatch, useSelector } from "react-redux";
 import { getBlogs } from "../redux/actions/blog";
 import { getTime } from "../utilty/getTime";
 import { NavLink } from "react-router-dom";
-  const parse = require("html-react-parser").default;
-// import { NavLink } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+
+const parse = require("html-react-parser").default;
+
+function AnimatedBg() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-3xl">
+      <div
+        className="absolute rounded-full opacity-[0.06]"
+        style={{
+          width: "500px",
+          height: "500px",
+          top: "-100px",
+          left: "-100px",
+          background: "radial-gradient(circle, #ffffff 0%, transparent 70%)",
+          animation: "orbFloat1 12s ease-in-out infinite",
+        }}
+      />
+      <div
+        className="absolute rounded-full opacity-[0.04]"
+        style={{
+          width: "400px",
+          height: "400px",
+          bottom: "-100px",
+          right: "-100px",
+          background: "radial-gradient(circle, #ffffff 0%, transparent 70%)",
+          animation: "orbFloat2 16s ease-in-out infinite",
+        }}
+      />
+      <style>{`
+        @keyframes orbFloat1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,30px) scale(1.05)}}
+        @keyframes orbFloat2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,-30px) scale(1.05)}}
+      `}</style>
+    </div>
+  );
+}
+
 const CardPanel = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state?.blog?.blog?.blog?.slice(0, 3));
@@ -12,74 +47,93 @@ const CardPanel = () => {
   useEffect(() => {
     dispatch(getBlogs());
   }, []);
-  // console.log(data);
+
   return (
-    <div>
-      <div class="text-gray-900 mb-24 rounded-3xl">
-        <div class="container grid grid-cols-12 mx-auto rounded-3xl">
-          <div class="group relative flex flex-col justify-center col-span-12 align-middle dark:bg-gray-300 bg-no-repeat rounded-3xl bg-cover lg:col-span-6 lg:h-auto bg-[url('https://images.pexels.com/photos/15779596/pexels-photo-15779596/free-photo-of-close-up-of-keys-on-a-vintage-typewriter.jpeg?auto=compress&cs=tinysrgb&w=600')]">
-            <div class="absolute inset-0 bg-gradient-to-br from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl"></div>
-            <div class="relative flex flex-col items-center  p-8 py-12 text-center dark:text-gray-800">
-              <h2 class="py-4 text-5xl font-bold text-white">
-                BLOGGING IS A CONVERSION NOT A CODE
-              </h2>
-              <p class="pb-6 text-white">BY MIKE BUTCHER</p>
-              <a class="" href="/allBlogs">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="w-7 h-7 text-white"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </a>
+    <div
+      className="relative rounded-3xl overflow-hidden mb-16 border border-white/10"
+      style={{ background: "#0a0a0a" }}
+    >
+      <AnimatedBg />
+
+      <div className="relative z-10 grid grid-cols-12">
+        {/* ── Left hero panel ── */}
+        <div
+          className="col-span-12 lg:col-span-6 relative flex flex-col justify-end p-10 min-h-[420px] bg-cover bg-center overflow-hidden"
+          style={{
+            backgroundImage: `url('https://images.pexels.com/photos/15779596/pexels-photo-15779596/free-photo-of-close-up-of-keys-on-a-vintage-typewriter.jpeg?auto=compress&cs=tinysrgb&w=600')`,
+          }}
+        >
+          {/* dark overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
+          {/* grain */}
+          <div
+            className="absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            }}
+          />
+
+          <div className="relative z-10">
+            <span className="text-white/40 text-xs font-medium uppercase tracking-widest mb-4 block">
+              Featured
+            </span>
+            <h2 className="text-3xl lg:text-4xl font-bold text-white leading-tight mb-4">
+              Blogging is a Conversation, Not a Code
+            </h2>
+            <p className="text-white/40 text-sm mb-6">by Mike Butcher</p>
+            <NavLink to="/allBlogs">
+              <button
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white border border-white/20 hover:bg-white/10 hover:border-white/35 transition-all"
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  backdropFilter: "blur(8px)",
+                }}
+              >
+                Explore all blogs
+                <ArrowRight size={14} />
+              </button>
+            </NavLink>
+          </div>
+        </div>
+
+        {/* ── Right blog list ── */}
+        <div className="col-span-12 lg:col-span-6 flex flex-col divide-y divide-white/8 p-2">
+          {data?.map((item, index) => (
+            <div
+              key={item._id || index}
+              className="group flex gap-4 p-5 hover:bg-white/4 rounded-2xl transition-all border-none"
+            >
+              {/* Thumbnail */}
+              <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 ">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover grayscale-[20%] group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    e.currentTarget.src =
+                      "https://res.cloudinary.com/dyphiefiy/image/upload/v1753491009/images_exk1wk.jpg";
+                  }}
+                />
+              </div>
+
+              {/* Content */}
+              <div className="flex flex-col justify-between flex-1 min-w-0">
+                <div>
+                  <span className="text-white/30 text-[11px]">
+                    {getTime(item.createdAt)}
+                  </span>
+                  <h3 className="text-white text-[14px] font-semibold leading-snug line-clamp-2 mt-0.5">
+                    {item.title}
+                  </h3>
+                </div>
+                <NavLink to={`/singlePost/${item._id}`}>
+                  <span className="inline-flex items-center gap-1.5 text-[12px] text-white/40 hover:text-white transition-colors mt-2">
+                    Read more <ArrowRight size={11} />
+                  </span>
+                </NavLink>
+              </div>
             </div>
-          </div>
-          <div class="flex flex-col col-span-12  divide-y lg:col-span-6  dark:divide-gray-300 rounded-3xl">
-            {data?.map((item, index) => {
-              return (
-                <>
-                  <div
-                    key={index}
-                    class=" group relative flex flex-col p-6 bg-no-repeat bg-cover bg-[gray] rounded-3xl m-[15px]"
-                  >
-                    <div class="absolute inset-0 bg-gradient-to-br from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300  rounded-3xl"></div>
-                    <div class="relative pt-6 pb-4 space-y-2">
-                      <span class="text-white">{getTime(item.createdAt)}</span>
-                      <h1 class="line-clamp-2 text-2xl font-bold text-white">
-                        {item.title}
-                      </h1>
-                      {/* <p class="line-clamp-2 text-white">  {parse(item.content)}</p> */}
-                      <a class="" href="/singlePost/666a8ea0d20411c5c41af8e9">
-                        <div class="inline-flex items-center py-2 space-x-2 text-sm dark:text-violet-600 border border-2 p-2 m-2 rounded-[10px] ">
-                          <NavLink to={`/singlePost/${item._id}`}>
-                            <span class="font-bold text-white ">Read more</span>
-                          </NavLink>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            class="w-4 h-4 font-bold text-white"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </>
-              );
-            })}
-          </div>
+          ))}
         </div>
       </div>
     </div>

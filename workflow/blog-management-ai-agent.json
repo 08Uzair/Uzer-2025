@@ -1,0 +1,985 @@
+{
+  "name": "blog-management-ai-agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -496,
+        1184
+      ],
+      "id": "09c62df6-816a-4b9b-8b8a-6511bf6ed2ca",
+      "name": "When chat message received",
+      "webhookId": "a2279c35-798c-473d-a426-f8d690d4c377"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.GROQ_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"openai/gpt-oss-120b\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert blog writer. Generate complete blog articles in JSON format.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Create a professional blog based on the following topic:\\n\\n{{ $json.blogData.title }}\\n\\nUse the image provided: {{ $json.blogData.image || '' }}\\n\\nReturn ONLY a valid JSON object in this exact format:\\n{\\n  \\\"title\\\": \\\"\\\",\\n  \\\"image\\\": \\\"\\\",\\n  \\\"content\\\": \\\"\\\",\\n  \\\"author\\\": \\\"{{ $json.blogData.author || 'Admin' }}\\\",\\n  \\\"category\\\": \\\"\\\",\\n  \\\"createdAt\\\": \\\"\\\"\\n}\\n\\nRequirements:\\n- Generate an SEO-friendly title.\\n- Write a complete blog article of at least 800 words.\\n- Format the content using Markdown.\\n- Return ONLY valid JSON without markdown wrapping codeblocks.\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1056,
+        -720
+      ],
+      "id": "3da2922d-39d6-45ee-95e8-e6bdca5b322c",
+      "name": "Create a Blog using Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "let rawResponse = $input.first().json.choices[0].message.content;\n\n// Check if the JSON is truncated and try to gracefully close it if needed\nif (!rawResponse.trim().endsWith('}')) {\n  // If it cut off in the middle of the content string, close the string and the object\n  if (!rawResponse.trim().endsWith('\"')) {\n    rawResponse = rawResponse.trim() + '\"';\n  }\n  rawResponse = rawResponse + '\\n}';\n}\n\ntry {\n  const blog = JSON.parse(rawResponse);\n  \n  // Format escaped characters safely\n  if (blog.content) {\n    blog.content = blog.content\n      .replace(/\\\\n/g, '\\n')\n      .replace(/\\\\\"/g, '\"')\n      .replace(/\\\\\\\\/g, '\\\\');\n  }\n  \n  return [{ json: blog }];\n} catch (error) {\n  // Fallback if parsing still fails, so the workflow doesn't break entirely\n  return [{ \n    json: { \n      error: \"Failed to parse truncated JSON automatically.\", \n      rawText: rawResponse \n    } \n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        -720
+      ],
+      "id": "652d3a47-ea5b-48b5-80a8-38130c616357",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.GROQ_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n{\n  \"model\": \"openai/gpt-oss-120b\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an AI assistant whose only job is to analyze the user's message and convert it into a JSON object representing a blog operation.\\n\\nIMPORTANT:\\n- Return ONLY valid JSON.\\n- Do NOT include markdown, explanations, or code fences.\\n- Extract all blog-related fields mentioned by the user.\\n- If a field is not mentioned, set it to null.\\n- Never generate blog content on your own.\\n\\nAvailable Actions:\\n1. createBlog\\n2. updateBlog\\n3. deleteBlog\\n4. getBlog\\n5. getAllBlogs\\n\\nCreate Blog Format:\\n{\\n  \\\"action\\\": \\\"createBlog\\\",\\n  \\\"blogData\\\": {\\n    \\\"title\\\": null,\\n    \\\"image\\\": null,\\n    \\\"content\\\": null,\\n    \\\"category\\\": null,\\n    \\\"author\\\": null\\n  }\\n}\\n\\nUpdate Blog Format:\\n{\\n  \\\"action\\\": \\\"updateBlog\\\",\\n  \\\"blogId\\\": null,\\n  \\\"updatedBlogData\\\": {}\\n}\\n\\nDelete Blog Format:\\n{\\n  \\\"action\\\": \\\"deleteBlog\\\",\\n  \\\"blogId\\\": null\\n,\\\"author\\\": null\\}\\n\\nGet Blog Format:\\n{\\n  \\\"action\\\": \\\"getBlog\\\",\\n  \\\"blogId\\\": null\\n}\\n\\nGet All Blogs Format:\\n{\\n  \\\"action\\\": \\\"getAllBlogs\\\"\\n}\\n\\nRules:\\n- If the user says create, write, generate, or add a blog, return action=createBlog.\\n- If the user says update, edit, or modify a blog, return action=updateBlog.\\n- If the user says delete or remove a blog, return action=deleteBlog.\\n- If the user asks for a specific blog by ID, return action=getBlog.\\n- If the user asks for all blogs, return action=getAllBlogs.\\n- Extract blogId when present.\\n- For createBlog, return all extracted fields inside blogData.\\n- For updateBlog, include ONLY the fields that the user wants to update inside updatedBlogData.\\n- Preserve URLs exactly as provided.\\n- Return only valid JSON.\"\n    },\n    {\n      \"role\": \"user\",\n    \"content\": `Chat Message: ${$json.chatInput} and the author id is ${$json.author}`\n    }\n  ]\n}\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        160,
+        -240
+      ],
+      "id": "ca6831bc-4700-4fb5-9619-49dfe02f049d",
+      "name": "blog-actions-decider"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "createBlog",
+                    "rightValue": "={{ $json.action }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "12473306-a238-425a-aeb6-ecb06a65bca8"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c07e4bc8-38b1-4971-b0e2-88f01bbee587",
+                    "leftValue": "updateBlog",
+                    "rightValue": "={{ $json.action }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ab4e51ac-a112-47a1-99d6-bc6391962f2f",
+                    "leftValue": "deleteBlog",
+                    "rightValue": "={{ $json.action }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e68cb029-4376-4afd-92f1-63fcec7aad16",
+                    "leftValue": "getBlog",
+                    "rightValue": "={{ $json.action }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cd011ace-55d7-461f-9b95-382192375e04",
+                    "leftValue": "getAllBlogs",
+                    "rightValue": "={{ $json.action }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        -288
+      ],
+      "id": "07456aee-c6cc-46da-b467-1a4550347851",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json.choices[0].message.content;\nlet cleaned = response.replace(/```json/g, \"\").replace(/```/g, \"\").trim();\n\n// If the JSON is cut off during an updateBlog action, manually reconstruct it safely\nif (cleaned.includes('\"action\": \"updateBlog\"') && !cleaned.endsWith('}')) {\n  \n  // 1. Extract the blogId securely\n  const blogIdMatch = cleaned.match(/\"blogId\"\\s*:\\s*\"([^\"]+)\"/);\n  const blogId = blogIdMatch ? blogIdMatch[1] : \"\";\n  // 2. Extract the title securely\n  const titleMatch = cleaned.match(/\"title\"\\s*:\\s*\"([^\"]+)\"/);\n  const title = titleMatch ? titleMatch[1] : \"\";\n  \n  // 3. Grab all available markup content generated so far\n  let content = \"\";\n  const contentMarker = '\"content\": \"';\n  const contentStartIdx = cleaned.indexOf(contentMarker);\n  \n  if (contentStartIdx !== -1) {\n    content = cleaned.substring(contentStartIdx + contentMarker.length);\n    \n    // Clean up any trailing hanging backslashes from a cut-off escape sequence (\\n or \\\")\n    if (content.endsWith('\\\\')) {\n      content = content.slice(0, -1);\n    }\n  }\n\n  // 4. Build the perfectly formatted output structure\n  const recoveredJson = {\n    action: \"updateBlog\",\n    blogId: blogId,\n    updatedBlogData: {\n      title: title,\n      content: content\n    }\n  };\n\n  return [{ json: recoveredJson }];\n}\n\n// Fallback: If the JSON is already fully complete or belongs to another action, parse normally\ntry {\n  const parsed = JSON.parse(cleaned);\n  return [{ json: parsed }];\n} catch (error) {\n  return [{ \n    json: { \n      error: \"JSON parsing failed entirely.\", \n      rawResponse: cleaned \n    } \n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        -240
+      ],
+      "id": "887050f4-144d-4e4c-a5af-292c0d69d265",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=http://host.docker.internal:8810/api/v1/blogPost/{{ $json._id }}/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1584,
+        -176
+      ],
+      "id": "da103f59-6466-4648-9796-fb4a23402c6c",
+      "name": "Delete Blog "
+    },
+    {
+      "parameters": {
+        "url": "=http://host.docker.internal:8810/api/v1/blogPost/{{ $json.blogId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1040,
+        112
+      ],
+      "id": "ef66089c-4372-4b86-99da-55c25705eafc",
+      "name": "Get Blog By ID"
+    },
+    {
+      "parameters": {
+        "url": "=http://host.docker.internal:8810/api/v1/blogPost",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1056,
+        320
+      ],
+      "id": "4a546158-8f6d-405d-b2e0-98856d6cd929",
+      "name": "Get All Blogs"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://host.docker.internal:8810/api/v1/blogPost/{{ $json._id }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Switch').item.json.updatedBlogData }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1520,
+        -528
+      ],
+      "id": "b876928a-575f-4caa-8226-b527a94729fa",
+      "name": "Update Blog by ID"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://host.docker.internal:8810/api/v1/blogPost",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"title\": $json.title,\n  \"image\": $json.image,\n\"author\":$json.author,\n  \"content\": $json.content,\n  \"category\": $json.category,\n  \"createdAt\": $json.createdAt\n} }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1920,
+        -704
+      ],
+      "id": "ab5cac6d-fa3d-45e0-8f81-7ccb833d5e01",
+      "name": "Create Blog"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "blog-agent-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -288,
+        -240
+      ],
+      "id": "28bcc8c7-9dfd-41a9-90f0-3807f0eba5f0",
+      "name": "Webhook",
+      "webhookId": "edfdea5e-182e-422b-9b4c-8759c8bde19d"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return {\n  ...$json.body,        // keeps EVERYTHING from the original payload, including author\n  chatInput: $json.body.message   // add whatever new field you need\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        -240
+      ],
+      "id": "ca476251-27e0-47c9-9261-44d92b1d3a50",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    \"success\": true,\n    \"message\": \"Blog created successfully\",\n    \"blogData\": {\n      \"title\": $('Code in JavaScript9').first().json.title,\n      \"image\":$('Code in JavaScript9').first().json.image ,\n      \"content\": $('Code in JavaScript9').first().json.content,\n      \"author\": $('Code in JavaScript9').first().json.author,\n      \"category\": $('Code in JavaScript9').first().json.category,\n      \"createdAt\": $('Code in JavaScript9').first().json.createdAt\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2080,
+        -720
+      ],
+      "id": "8adc6a0e-c27e-4064-a331-f2a6bf1f1952",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nreturn [\n  {\n    success: true,\n    message: \"Blog updated successfully\",\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        -528
+      ],
+      "id": "ad4f1c55-1881-49e5-b5d0-fae0becb10e7",
+      "name": "Code in JavaScript5"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    success: true,\n    message: \"Blog deleted successfully\"\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        -176
+      ],
+      "id": "e3d34ebb-19a3-43b2-ae41-498d150d606c",
+      "name": "Code in JavaScript6"
+    },
+    {
+      "parameters": {
+        "jsCode": "const blog = $json;\n\nreturn [\n  {\n    success: true,\n    message: \"Blog fetched successfully\",\n    data: blog\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        112
+      ],
+      "id": "49a80144-cf5b-4c7f-ac51-3a7501e6cd60",
+      "name": "Code in JavaScript7"
+    },
+    {
+      "parameters": {
+        "jsCode": "const blogs = $json;\n\nreturn [\n  {\n    success: true,\n    message: \"Blogs fetched successfully\",\n    data: blogs\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        320
+      ],
+      "id": "b14951d4-ae1f-4194-976c-d9399c601209",
+      "name": "Code in JavaScript8"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": $json.success, \"message\": $json.message, \"blogData\": $json.blogData } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2288,
+        -720
+      ],
+      "id": "36587f7d-12ff-495c-9051-6d19eb8e780e",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"id\": $json._id,\n  \"title\": $json.title,\n  \"image\": $json.image,\n  \"category\":$json.category._id,\n  \"author\": $json.author,\n  \"content\": $json.content,\n  \"createdAt\": $json.createdAt\n} }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2128,
+        -528
+      ],
+      "id": "74e64170-6048-471b-bfba-3a0b89acdb5f",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": $json.success, \"message\": $json.message } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2032,
+        -176
+      ],
+      "id": "a07708dd-83d0-49b7-97aa-369bc38a21cb",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": $json.success, \"message\": $json.message, \"data\": $json.data } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1376,
+        112
+      ],
+      "id": "e2caf361-d2c7-4afa-83c9-7bc7ddcd6794",
+      "name": "Respond to Webhook3"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1376,
+        320
+      ],
+      "id": "df0dbf11-4d12-42a2-9600-724c4d22c83b",
+      "name": "Respond to Webhook4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.GROQ_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\"model\": \"openai/gpt-oss-120b\",\n\"messages\": [\n{\n\"role\": \"system\",\n\"content\": \"You are an expert blog writer and category classifier. Return ONLY valid JSON. Never return markdown code fences. Never return explanations, reasoning, notes, or text outside the JSON object.\"\n},\n{\n\"role\": \"user\",\n\"content\": \"Create a professional blog based on the following topic:\\n\\n{{ $json.title }}\\n\\nUse the image provided: {{ $json.image || '' }}\\n\\nDetermine the most appropriate category and return the corresponding MongoDB ObjectId.\\n\\nCATEGORY MAPPING\\n\\nbitcoin -> 66654c8c123bd0b06327ced2\\ntechnology -> 666772715fe3470824557139\\neducation -> 666772795fe347082455713b\\nscience -> 666772815fe347082455713d\\nhealth -> 666772cb5fe347082455713f\\ntravel -> 666772de5fe3470824557141\\nfood & cooking -> 666772f05fe3470824557143\\nentertainment -> 666773035fe3470824557145\\nbusiness -> 6667731a5fe3470824557149\\nbusiness strategy -> 6667731a5fe3470824557149\\ngym -> 668de2a3ec4c14d6ba035010\\n\\nCLASSIFICATION RULES\\n\\n- AI, Artificial Intelligence, Programming, Software Development, Coding, React, Next.js, Node.js, Web Development, Mobile Development -> technology\\n- Startup, Marketing, Sales, Entrepreneurship, Management, Finance, Investment, Business Growth -> business\\n- Bitcoin, Blockchain, Cryptocurrency, Web3, Crypto Trading -> bitcoin\\n- Fitness, Workout, Bodybuilding, Exercise, Muscle Building, Strength Training -> gym\\n- Diet, Nutrition, Wellness, Medical Topics, Healthcare -> health\\n- School, College, Learning, Courses, Tutorials -> education\\n- Research, Physics, Chemistry, Biology, Space, Scientific Discoveries -> science\\n- Tourism, Vacation, Destinations, Hotels, Trips -> travel\\n- Recipes, Cooking, Food Preparation, Restaurants -> food & cooking\\n- Movies, TV Shows, Music, Celebrities, Gaming -> entertainment\\n\\nREQUIREMENTS\\n\\n- Generate an SEO-friendly title.\\n- Write a complete blog article of at least 800 words.\\n- Format the content using Markdown.\\n- Select exactly one category.\\n- Store ONLY the MongoDB ObjectId in the category field.\\n- Use the provided image URL.\\n- Use author: {{ $json.author || 'Admin' }}.\\n- Set createdAt as the current ISO timestamp.\\n\\nIMPORTANT JSON RULES\\n\\n- Return ONLY a JSON object.\\n- No markdown code blocks.\\n- No explanations.\\n- No reasoning.\\n- No notes.\\n- No comments.\\n- No additional fields.\\n- No bold formatting.\\n- No text before or after the JSON.\\n- The response MUST be directly parseable by JSON.parse().\\n\\nExpected JSON structure:\\n\\n{\\n  \\\"title\\\": \\\"string\\\",\\n  \\\"image\\\": \\\"string\\\",\\n  \\\"content\\\": \\\"string\\\",\\n  \\\"author\\\": \\\"string\\\",\\n  \\\"category\\\": \\\"string\\\",\\n  \\\"createdAt\\\": \\\"string\\\"\\n}\"\n}\n]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1472,
+        -720
+      ],
+      "id": "7fc523a9-b4bd-47b4-81f0-274210bf85b9",
+      "name": "category formator"
+    },
+    {
+      "parameters": {
+        "jsCode": "let rawResponse = $input.first().json.choices[0].message.content\n\n// Check if the JSON is truncated and try to gracefully close it if needed\nif (!rawResponse.trim().endsWith('}')) {\n  // If it cut off in the middle of the content string, close the string and the object\n  if (!rawResponse.trim().endsWith('\"')) {\n    rawResponse = rawResponse.trim() + '\"';\n  }\n  rawResponse = rawResponse + '\\n}';\n}\n\ntry {\n  const blog = JSON.parse(rawResponse);\n  \n  // Format escaped characters safely\n  if (blog.content) {\n    blog.content = blog.content\n      .replace(/\\\\n/g, '\\n')\n      .replace(/\\\\\"/g, '\"')\n      .replace(/\\\\\\\\/g, '\\\\');\n  }\n  \n  return [{ json: blog }];\n} catch (error) {\n  // Fallback if parsing still fails, so the workflow doesn't break entirely\n  return [{ \n    json: { \n      error: \"Failed to parse truncated JSON automatically.\", \n      rawText: rawResponse \n    } \n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        -704
+      ],
+      "id": "7a55f66e-b6ed-4da1-872b-f1115b615acd",
+      "name": "Code in JavaScript9"
+    },
+    {
+      "parameters": {
+        "url": "=http://host.docker.internal:8810/api/v1/blogPost/{{ $('Switch').item.json.blogId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1952,
+        -528
+      ],
+      "id": "eba3ccab-5323-43be-a74a-a7fc5e2805ac",
+      "name": "Get Blog By ID1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "07843a47-e670-47bf-ac7f-a2ce7cc8080f",
+              "leftValue": "={{ $('Switch').item.json.updatedBlogData.author }}",
+              "rightValue": "={{ $json.author._id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1280,
+        -448
+      ],
+      "id": "7d99b156-9ac1-4283-b9ac-16e77cee4208",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "=http://host.docker.internal:8810/api/v1/blogPost/{{ $('Switch').item.json.blogId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1024,
+        -432
+      ],
+      "id": "ca8e5bb8-0d51-499f-9216-7873bbb4f842",
+      "name": "Get Blog By ID2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"message\": \"Sorry, you are not the admin of this blog so u cant update it\" } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1520,
+        -352
+      ],
+      "id": "b7b56224-fd76-4146-8a1b-3da713ac3e98",
+      "name": "Respond to Webhook5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "07843a47-e670-47bf-ac7f-a2ce7cc8080f",
+              "leftValue": "={{ $json.author._id }}",
+              "rightValue": "={{ $('Switch').item.json.author }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        -160
+      ],
+      "id": "ab5c4cfd-090f-4c40-a08b-89f71703ccae",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "url": "=http://host.docker.internal:8810/api/v1/blogPost/{{ $('Switch').item.json.blogId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1040,
+        -160
+      ],
+      "id": "8380ce26-e842-46f3-b396-e0c3c3ea1637",
+      "name": "Get Blog By ID3"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"message\": \"Sorry, you are not the admin of this blog so u cant delete it\" } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1584,
+        -16
+      ],
+      "id": "6052d4c1-7c1e-448a-bdf6-000055048490",
+      "name": "Respond to Webhook6"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        []
+      ]
+    },
+    "Create a Blog using Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "blog-actions-decider": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Create a Blog using Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Blog By ID2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Blog By ID3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Blog By ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get All Blogs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "category formator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "blog-actions-decider",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Blog": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Blog by ID": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Blog ": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Blog By ID": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Blogs": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript5": {
+      "main": [
+        [
+          {
+            "node": "Get Blog By ID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript6": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript7": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript8": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "category formator": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript9": {
+      "main": [
+        [
+          {
+            "node": "Create Blog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Blog By ID1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Blog By ID2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Update Blog by ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Blog By ID3": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Delete Blog ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5300f20a-a950-47ba-8225-93fcfba1b939",
+  "meta": {
+    "instanceId": "6c822fbcd55c7c5d2321a92711b629618af305b4024a8385d5bce2134eca5611"
+  },
+  "nodeGroups": [],
+  "id": "UPBlzGharsxGo8IX",
+  "tags": []
+}
