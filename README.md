@@ -211,9 +211,9 @@ Install the following before starting the project.
 # 📥 Clone Repository
 
 ```bash
-git clone https://github.com/08Uzair/Uzer-2024-Blog.git
+git clone https://github.com/08Uzair/Uzer-2025.git
 
-cd Uzer-2024-Blog
+cd Uzer-2025
 ```
 
 ---
@@ -337,18 +337,29 @@ docker pull 08uzair/blog-agent-n8n:latest
 
 ---
 
-## Step 2: Run the Docker Container
+## Step 2: Set Your Groq API Key as an Environment Variable
+
+Create a `.env` file and add your Groq API key:
+
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+---
+
+## Step 3: Run the Docker Container
 
 ```bash
 docker run -d \
   --name blog-agent-n8n \
   -p 5678:5678 \
+  --env-file .env \
   08uzair/blog-agent-n8n:latest
 ```
 
 ---
 
-## Step 3: Verify the Container
+## Step 4: Verify the Container
 
 Check that the container is running:
 
@@ -360,7 +371,7 @@ You should see a container named **blog-agent-n8n** with port **5678** exposed.
 
 ---
 
-## Step 4: Open n8n
+## Step 5: Open n8n
 
 Open your browser and visit:
 
@@ -372,7 +383,7 @@ If prompted, create your n8n account (first-time setup only).
 
 ---
 
-## Step 5: Activate the Workflow
+## Step 6: Activate the Workflow
 
 The workflow is already included in the Docker image.
 
@@ -383,7 +394,7 @@ The workflow is already included in the Docker image.
 
 ---
 
-## Step 6: Configure the Backend
+## Step 7: Configure the Backend
 
 Copy the webhook URL from the **Webhook** node.
 
@@ -482,11 +493,15 @@ npm start
 
 ### Terminal 3
 
-n8n
+Set your Groq API key and start n8n
 
 ```bash
+export GROQ_API_KEY=your_groq_api_key_here
+
 npx n8n start
 ```
+
+> **Windows (PowerShell):** `$env:GROQ_API_KEY="your_groq_api_key_here"`
 
 Now everything is connected.
 
