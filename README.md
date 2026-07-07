@@ -1,8 +1,8 @@
-# 🚀 MERN AI Blog Application
+#  MERN AI Blog Application
 
 
 
-# 📖 Overview
+#  Overview
 
 A modern **AI-powered Blog Platform** built using the **MERN Stack** with **Tailwind CSS**.
 
@@ -20,9 +20,9 @@ The AI Agent understands the request and performs the required CRUD operation au
 
 ---
 
-# ✨ Features
+# Features
 
-## 👤 Authentication
+## Authentication
 
 * Secure JWT Authentication
 * User Registration
@@ -31,67 +31,87 @@ The AI Agent understands the request and performs the required CRUD operation au
 * Password Hashing using bcrypt
 
 ---
-# 📸 Application Preview
+# Application Preview
 
-## 🏠 Home Page
+## Home Page
 
 <p align="center">
-  <img src="images/home.png" alt="Home Page" width="90%">
+<img width="1520" height="779" alt="image" src="https://github.com/user-attachments/assets/1cbcdfb9-321c-4524-8b50-1c02b6988946" />
+
 </p>
 
 ---
 
-## 🔐 Authentication
+## Authentication
 
 <p align="center">
-  <img src="images/authentication.png" alt="Authentication Page" width="90%">
+ <img width="1536" height="779" alt="image" src="https://github.com/user-attachments/assets/6da01bff-1d28-4194-9d26-bd9d5775f456" />
+
 </p>
 
 ---
 
-## 📝 All Blogs
+## All Blogs
 
 <p align="center">
-  <img src="images/all-blogs.png" alt="All Blogs Page" width="90%">
+ <img width="1516" height="776" alt="image" src="https://github.com/user-attachments/assets/5ff9155b-606f-4efb-8fbc-4c4e7df37266" />
+
 </p>
 
 ---
 
-## 📖 Single Blog
+## Single Blog
 
 <p align="center">
-  <img src="images/single-blog.png" alt="Single Blog Page" width="90%">
+<img width="1418" height="779" alt="image" src="https://github.com/user-attachments/assets/ceca6d9e-191e-405b-8083-ce49b3704abc" />
+
 </p>
 
 ---
 
-## ✍️ Create Blog
+## Create Blog
 
 <p align="center">
-  <img src="images/create-blog.png" alt="Create Blog Page" width="90%">
+ <img width="1469" height="741" alt="image" src="https://github.com/user-attachments/assets/22a2f6e7-e53e-4ab2-871a-022cd0d19cdf" />
+
 </p>
 
 ---
 
-## 🤖 AI Blog Assistant
+## AI Blog Assistant
 
 <p align="center">
-  <img src="images/ai-agent.png" alt="AI Blog Assistant" width="90%">
+  <img width="1536" height="741" alt="image" src="https://github.com/user-attachments/assets/19ecdade-151c-4922-ba48-087c2d3eff3e" />
+
+
 </p>
 
 ---
 
-## 🔄 n8n Workflow
+## n8n Workflow
 
 <p align="center">
-  <img src="images/n8n-workflow.png" alt="n8n Workflow" width="90%">
+  <img width="852" height="427" alt="Screenshot 2026-07-07 105203" src="https://github.com/user-attachments/assets/401c0619-226f-439d-b963-c3c78e98a199" />
+
 </p>
+
+---
+# Demo
+
+### Live Website
+
+https://uzerqureshi-blog.netlify.app
+
+---
+
+### YouTube Demo
+
+https://youtu.be/uINd_sg_WIo?si=yNYHee2JN6HF6yXs
 
 ---
 
 
-
-## 📝 Blog Management
+## Blog Management
 
 * Create Blog
 * Read Blogs
@@ -103,7 +123,7 @@ The AI Agent understands the request and performs the required CRUD operation au
 
 ---
 
-## 🤖 AI Blog Assistant
+## AI Blog Assistant
 
 Integrated with **n8n AI Workflow**
 
@@ -132,7 +152,7 @@ Delete my  blog whose id is "blogId"
 
 ---
 
-## 🎨 UI
+## UI
 
 * Modern Design
 * Tailwind CSS
@@ -144,7 +164,7 @@ Delete my  blog whose id is "blogId"
 
 ---
 
-# 🛠 Tech Stack
+# Tech Stack
 
 ## Frontend
 
@@ -170,7 +190,7 @@ Delete my  blog whose id is "blogId"
 
 ---
 
-# 📂 Project Structure
+# Project Structure
 
 ```
 MERN-BLOG
@@ -196,7 +216,7 @@ MERN-BLOG
 
 ---
 
-# ⚙️ Prerequisites
+# Prerequisites
 
 Install the following before starting the project.
 
@@ -208,7 +228,7 @@ Install the following before starting the project.
 
 ---
 
-# 📥 Clone Repository
+# Clone Repository
 
 ```bash
 git clone https://github.com/08Uzair/Uzer-2025.git
@@ -218,7 +238,7 @@ cd Uzer-2025
 
 ---
 
-# ⚙️ Environment Variables
+# Environment Variables
 
 ## Server
 
@@ -248,7 +268,7 @@ JWT_SECRET=mySecretKey123
 
 ---
 
-# 📦 Install Dependencies
+# Install Dependencies
 
 ## Backend
 
@@ -272,7 +292,7 @@ npm install
 
 ---
 
-# ▶️ Start the Backend
+# Start the Backend
 
 ```bash
 cd server
@@ -296,7 +316,7 @@ Server Running on Port 8810
 
 ---
 
-# ▶️ Start the Frontend
+# Start the Frontend
 
 Open another terminal
 
@@ -321,7 +341,7 @@ http://localhost:3000
 in your browser.
 
 ---
-# 🤖 Setup n8n Workflow (Docker)
+# Setup n8n Workflow (Docker)
 
 This project includes a pre-configured **n8n Docker image** hosted on Docker Hub, making setup quick and easy.
 
@@ -414,7 +434,7 @@ Restart your backend server after saving the changes.
 
 ---
 
-# 🐳 Useful Docker Commands
+# Useful Docker Commands
 
 ### Start the container
 
@@ -448,22 +468,22 @@ docker rm -f blog-agent-n8n
 
 ---
 
-## ✅ Setup Checklist
+## Setup Checklist
 
 Before using the AI-powered blog features, ensure that:
 
-* ✅ MongoDB is running
-* ✅ Backend server is running (`http://localhost:8810`)
-* ✅ Frontend is running (`http://localhost:3000`)
-* ✅ Docker container is running
-* ✅ The n8n workflow is active
-* ✅ Required credentials are configured
-* ✅ `N8N_WEBHOOK_URL` matches the webhook URL from the workflow
+* MongoDB is running
+* Backend server is running (`http://localhost:8810`)
+* Frontend is running (`http://localhost:3000`)
+* Docker container is running
+* The n8n workflow is active
+* Required credentials are configured
+* `N8N_WEBHOOK_URL` matches the webhook URL from the workflow
 
 You're now ready to manage blogs using natural language with the integrated AI agent.
 
 
-# 🚀 Running Everything Together
+# Running Everything Together
 
 Open **three terminals**.
 
@@ -507,7 +527,7 @@ Now everything is connected.
 
 ---
 
-# 🌐 REST APIs
+# REST APIs
 
 ### Authentication
 
@@ -564,37 +584,7 @@ POST
 /api/v1/category/createCategory
 ```
 
----
-
-# 📸 Application Preview
-
-## 🏠 Home
-
----
-
-## 🔐 Authentication
-
----
-
-## 📝 All Blogs
-
----
-
-# 🎥 Demo
-
-### Live Website
-
-https://uzerqureshi-blog.netlify.app
-
----
-
-### YouTube Demo
-
-https://youtu.be/uINd_sg_WIo?si=yNYHee2JN6HF6yXs
-
----
-
-# 📌 Future Improvements
+# Future Improvements
 
 * AI Blog Summarizer
 * AI Blog Generator
@@ -610,7 +600,7 @@ https://youtu.be/uINd_sg_WIo?si=yNYHee2JN6HF6yXs
 
 ---
 
-# 🤝 Contributing
+# Contributing
 
 Contributions are always welcome.
 
@@ -638,17 +628,17 @@ git push origin feature-name
 
 ---
 
-# ⭐ Support
+# Support
 
 If you found this project useful,
 
-please consider giving it a ⭐ on GitHub.
+please consider giving it a star on GitHub.
 
 It helps the project grow and motivates future improvements.
 
 ---
 
-# 👨‍💻 Author
+# Author
 
 **Uzair Qureshi**
 
